@@ -1,0 +1,56 @@
+<view class="page closet-page">
+  <view class="section page-intro">
+    <view class="title">我的衣柜</view>
+    <view class="subtitle">管理衣物和模特，作为 AI 试穿素材</view>
+  </view>
+
+  <view class="section action-grid">
+    <action-card title="上传衣服" description="添加单品到衣柜" icon="＋" url="/pages/cloth/edit" />
+    <action-card title="上传模特" description="设置你的试穿形象" icon="◎" url="/pages/model/index" />
+  </view>
+
+  <view class="section model-card" bindtap="onOpenModel">
+    <image mode="aspectFill" src="{{modelImage}}" />
+    <view class="model-copy">
+      <view class="model-label">当前试穿模特</view>
+      <view class="model-title">{{modelText}}</view>
+      <view class="model-desc">{{modelHint}}</view>
+    </view>
+    <view class="model-action">更换</view>
+  </view>
+
+  <view class="section category-section">
+    <tag-selector options="{{categoryOptions}}" value="{{activeCategory}}" bindchange="onSelectCategory" />
+  </view>
+
+  <view wx:if="{{loading}}" class="grid closet-grid">
+    <view class="cloth-skeleton skeleton"></view>
+    <view class="cloth-skeleton skeleton"></view>
+    <view class="cloth-skeleton skeleton"></view>
+    <view class="cloth-skeleton skeleton"></view>
+  </view>
+
+  <view wx:elif="{{items.length}}" class="grid closet-grid">
+    <view wx:for="{{items}}" wx:key="_id" class="cloth-card">
+      <image-card
+        image-url="{{item.imageUrl}}"
+        badge="{{item.categoryLabel}}"
+        title="{{item.color}}"
+        subtitle="使用 {{item.useCount}} 次"
+        placeholder="衣物图片"
+        show-delete="{{true}}"
+        data-id="{{item._id}}"
+        binddelete="onDeleteCloth"
+      />
+      <view class="cloth-source">{{item.sourceLabel}}</view>
+    </view>
+  </view>
+
+  <empty-state
+    wx:else
+    title="还没有衣物"
+    description="上传第一件衣服，开始创建试穿图"
+    button-text="上传衣服"
+    bindaction="onUpload"
+  />
+</view>

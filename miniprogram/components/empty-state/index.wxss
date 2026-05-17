@@ -1,0 +1,81 @@
+.empty {
+  min-height: 360rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx 32rpx;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  text-align: center;
+}
+
+.empty-art {
+  position: relative;
+  width: 156rpx;
+  height: 116rpx;
+  margin-bottom: 26rpx;
+}
+
+.empty-art__card {
+  position: absolute;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 18rpx;
+  background: #EFE5D3;
+}
+
+.card-a {
+  left: 12rpx;
+  top: 8rpx;
+  width: 92rpx;
+  height: 104rpx;
+}
+
+.card-b {
+  right: 8rpx;
+  top: 0;
+  width: 78rpx;
+  height: 92rpx;
+  background: #FFFFFF;
+}
+
+.empty-art__dot {
+  position: absolute;
+  right: 32rpx;
+  bottom: 12rpx;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #C8A96A;
+}
+
+.empty-title {
+  color: #1F1F1F;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.empty-desc {
+  max-width: 470rpx;
+  margin-top: 10rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.empty-button {
+  min-width: 210rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28rpx;
+  padding: 0 28rpx;
+  border-radius: 36rpx;
+  background: #111111;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  font-weight: 700;
+}

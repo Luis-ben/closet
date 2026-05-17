@@ -1,0 +1,96 @@
+<view class="page tryon-page">
+  <view class="page-header tryon-header">
+    <view class="header-copy">
+      <view class="title">今天想试哪一套？</view>
+      <view class="subtitle">选择模特和衣物，AI 生成你的穿搭预览</view>
+    </view>
+    <credit-pill credits="{{credits}}" />
+  </view>
+
+  <view class="tryon-canvas section">
+    <image mode="aspectFill" src="{{modelImage}}" bindtap="onOpenModel" />
+    <view class="canvas-top">
+      <view class="canvas-badge">当前模特</view>
+      <view class="canvas-change" catchtap="onOpenModel">更换</view>
+    </view>
+    <view class="canvas-gradient"></view>
+    <view class="canvas-copy">
+      <view class="canvas-title">{{modelTitle}}</view>
+      <view class="canvas-desc">把衣柜里的衣服，穿到你身上</view>
+    </view>
+  </view>
+
+  <view class="section selected-section">
+    <section-header title="已选衣物 {{selectedClothingItems.length}}/3" subtitle="再次点击已选衣物可取消选择" />
+    <view class="selected-slots">
+      <view
+        wx:for="{{selectedSlots}}"
+        wx:key="label"
+        class="selected-slot {{item.hasItem ? 'is-filled' : ''}}"
+        data-id="{{item.itemId}}"
+        bindtap="onRemoveSelected"
+      >
+        <image wx:if="{{item.hasItem}}" mode="aspectFill" src="{{item.imageUrl}}" />
+        <view wx:if="{{item.hasItem}}" class="slot-remove">×</view>
+        <view wx:if="{{item.hasItem}}" class="slot-meta">{{item.categoryLabel}}</view>
+        <view wx:else class="slot-placeholder">+ {{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section filter-section">
+    <tag-selector options="{{categoryOptions}}" value="{{activeCategory}}" bindchange="onCategoryChange" />
+  </view>
+
+  <view class="section closet-strip">
+    <section-header title="衣柜单品" subtitle="横向滑动，点选最多 3 件" action-text="上传衣服" bindaction="onUploadCloth" />
+    <scroll-view wx:if="{{loading}}" scroll-x class="cloth-scroll" enable-flex>
+      <view class="cloth-row">
+        <view class="cloth-skeleton skeleton"></view>
+        <view class="cloth-skeleton skeleton"></view>
+        <view class="cloth-skeleton skeleton"></view>
+      </view>
+    </scroll-view>
+    <scroll-view wx:elif="{{displayClothingItems.length}}" scroll-x class="cloth-scroll" enable-flex>
+      <view class="cloth-row">
+        <view
+          wx:for="{{displayClothingItems}}"
+          wx:key="_id"
+          class="cloth-item"
+          data-id="{{item._id}}"
+          bindtap="onToggleCloth"
+        >
+          <image-card
+            image-url="{{item.imageUrl}}"
+            title="{{item.categoryLabel}}"
+            subtitle="{{item.color}}"
+            selected="{{item.selected}}"
+            placeholder="衣物"
+          />
+        </view>
+      </view>
+    </scroll-view>
+    <empty-state
+      wx:else
+      title="衣柜还是空的"
+      description="先上传几件衣服，开始 AI 试穿"
+      button-text="上传衣服"
+      bindaction="onUploadCloth"
+    />
+  </view>
+
+  <view class="section style-section">
+    <section-header title="生成风格" subtitle="会映射到现有 scene/style 字段" />
+    <tag-selector options="{{styleOptions}}" value="{{styleValue}}" bindchange="onStyleChange" />
+  </view>
+
+  <view class="safe-bottom-space"></view>
+  <bottom-action-bar
+    left-text="{{bottomText}}"
+    button-text="{{generateButtonText}}"
+    loading-text="生成中"
+    disabled="{{generateDisabled}}"
+    loading="{{submitting}}"
+    bindaction="onGenerate"
+  />
+</view>

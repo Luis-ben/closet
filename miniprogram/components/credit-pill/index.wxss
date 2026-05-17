@@ -1,0 +1,22 @@
+.credit-pill {
+  height: 58rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 0 22rpx;
+  border: 1rpx solid rgba(200, 169, 106, 0.42);
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #1F1F1F;
+  font-size: 24rpx;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 8rpx 22rpx rgba(31, 31, 31, 0.04);
+}
+
+.credit-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #C8A96A;
+}

@@ -1,0 +1,55 @@
+{
+  "pages": [
+    "pages/tryon/index",
+    "pages/closet/index",
+    "pages/inspiration/index",
+    "pages/profile/index",
+    "pages/index/index",
+    "pages/cloth/edit",
+    "pages/model/index",
+    "pages/task/status",
+    "pages/result/detail",
+    "pages/privacy/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "AI 衣镜",
+    "navigationBarBackgroundColor": "#F7F3EE",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F3EE"
+  },
+  "tabBar": {
+    "color": "#7A746E",
+    "selectedColor": "#111111",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/tryon/index",
+        "text": "试穿"
+      },
+      {
+        "pagePath": "pages/closet/index",
+        "text": "衣柜"
+      },
+      {
+        "pagePath": "pages/inspiration/index",
+        "text": "灵感"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index",
+    "image-card": "/components/image-card/index",
+    "bottom-action-bar": "/components/bottom-action-bar/index",
+    "tag-selector": "/components/tag-selector/index",
+    "credit-pill": "/components/credit-pill/index",
+    "section-header": "/components/section-header/index",
+    "action-card": "/components/action-card/index"
+  }
+}

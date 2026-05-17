@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "我的模特",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index",
+    "section-header": "/components/section-header/index"
+  }
+}

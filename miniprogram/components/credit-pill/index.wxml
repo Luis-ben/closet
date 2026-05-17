@@ -1,0 +1,4 @@
+<view class="credit-pill">
+  <text class="credit-dot"></text>
+  <text>{{label}} {{credits}} {{unit}}</text>
+</view>

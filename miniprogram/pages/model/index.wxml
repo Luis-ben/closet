@@ -1,0 +1,60 @@
+<view class="page model-page">
+  <view class="section page-intro">
+    <view class="title">我的模特</view>
+    <view class="subtitle">选择一个试穿形象，AI 会将衣物融合到模特身上</view>
+  </view>
+
+  <view class="current-model-card section">
+    <image mode="aspectFill" src="{{currentModelImage}}" />
+    <view class="current-badge">当前使用</view>
+    <view class="model-info">
+      <view class="model-name">{{currentModelName}}</view>
+      <view class="model-meta">
+        <text>{{currentModelTypeText}}</text>
+        <text class="dot"></text>
+        <text>{{currentAuditText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section model-actions">
+    <view class="primary-button" bindtap="onUploadModel">上传全身照</view>
+    <view class="secondary-button" bindtap="onUseDefault">使用默认模特</view>
+  </view>
+
+  <view class="section tip-card">
+    <view class="module-title">上传建议</view>
+    <view class="tip-row">正面全身照</view>
+    <view class="tip-row">光线清晰</view>
+    <view class="tip-row">背景干净</view>
+    <view class="tip-row">请勿上传他人隐私照片</view>
+  </view>
+
+  <view class="section">
+    <section-header title="模特列表" subtitle="横向滑动选择已上传模特" />
+    <scroll-view wx:if="{{modelCards.length}}" scroll-x class="model-scroll" enable-flex>
+      <view class="model-list">
+        <view
+          wx:for="{{modelCards}}"
+          wx:key="_id"
+          class="model-mini-card {{item.selected ? 'active' : ''}}"
+          data-id="{{item._id}}"
+          bindtap="onSelectLocalModel"
+        >
+          <image mode="aspectFill" src="{{item.imageUrl}}" />
+          <view class="model-mini-meta">
+            <view class="mini-name">{{item.displayName}}</view>
+            <view class="status {{item.auditStatus}}">{{item.auditText}}</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <empty-state
+      wx:else
+      title="还没有专属模特"
+      description="上传一张清晰全身照，就能看到更贴近自己的试穿效果。"
+      button-text="上传全身照"
+      bindaction="onUploadModel"
+    />
+  </view>
+</view>

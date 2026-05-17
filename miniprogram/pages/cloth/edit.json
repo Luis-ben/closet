@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "上传衣物",
+  "usingComponents": {
+    "bottom-action-bar": "/components/bottom-action-bar/index",
+    "tag-selector": "/components/tag-selector/index",
+    "section-header": "/components/section-header/index"
+  }
+}

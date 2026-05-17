@@ -1,0 +1,7 @@
+<view class="page index-page">
+  <view class="redirect-card">
+    <view class="title">AI 衣镜</view>
+    <view class="subtitle">正在进入试穿工作台</view>
+    <view class="primary-button" bindtap="onGoTryon">进入试穿</view>
+  </view>
+</view>

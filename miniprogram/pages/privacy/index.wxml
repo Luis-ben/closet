@@ -1,0 +1,45 @@
+<view class="page privacy-page">
+  <view class="section page-intro">
+    <view class="title">隐私设置</view>
+    <view class="subtitle">让你放心上传照片，也能随时管理自己的数据</view>
+  </view>
+
+  <view class="section privacy-card">
+    <view class="privacy-item">
+      <view class="privacy-dot"></view>
+      <view>你的照片仅用于生成试穿预览</view>
+    </view>
+    <view class="privacy-item">
+      <view class="privacy-dot"></view>
+      <view>你可以随时删除衣物、模特和账号数据</view>
+    </view>
+    <view class="privacy-item">
+      <view class="privacy-dot"></view>
+      <view>我们不会公开展示你的个人照片</view>
+    </view>
+  </view>
+
+  <view class="section danger-list">
+    <view class="danger-item" bindtap="onDeleteAllClothing">
+      <view>
+        <view class="danger-title">删除全部衣物</view>
+        <view class="danger-note">清空衣柜中的衣物图片</view>
+      </view>
+      <view class="danger-action">删除</view>
+    </view>
+    <view class="danger-item" bindtap="onDeleteModels">
+      <view>
+        <view class="danger-title">删除我的模特</view>
+        <view class="danger-note">移除已上传的全身照</view>
+      </view>
+      <view class="danger-action">删除</view>
+    </view>
+    <view class="danger-item" bindtap="onDeleteAccount">
+      <view>
+        <view class="danger-title">注销账号</view>
+        <view class="danger-note">账号数据会进入异步清理流程</view>
+      </view>
+      <view class="danger-action strong">注销</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "衣柜",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index",
+    "image-card": "/components/image-card/index",
+    "tag-selector": "/components/tag-selector/index",
+    "action-card": "/components/action-card/index"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "试穿",
+  "usingComponents": {
+    "credit-pill": "/components/credit-pill/index",
+    "section-header": "/components/section-header/index",
+    "empty-state": "/components/empty-state/index",
+    "image-card": "/components/image-card/index",
+    "bottom-action-bar": "/components/bottom-action-bar/index",
+    "tag-selector": "/components/tag-selector/index"
+  }
+}

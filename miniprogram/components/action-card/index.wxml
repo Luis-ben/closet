@@ -1,0 +1,7 @@
+<view class="action-card" bindtap="onTap">
+  <view class="action-icon">{{icon}}</view>
+  <view class="action-copy">
+    <view class="action-title">{{title}}</view>
+    <view wx:if="{{description}}" class="action-desc">{{description}}</view>
+  </view>
+</view>

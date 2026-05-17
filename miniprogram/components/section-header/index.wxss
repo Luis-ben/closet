@@ -1,0 +1,32 @@
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-main {
+  min-width: 0;
+}
+
+.section-title {
+  color: #1F1F1F;
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.section-subtitle {
+  margin-top: 8rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.section-action {
+  flex-shrink: 0;
+  color: #C8A96A;
+  font-size: 24rpx;
+  font-weight: 700;
+}

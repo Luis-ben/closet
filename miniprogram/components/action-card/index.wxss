@@ -1,0 +1,40 @@
+.action-card {
+  min-height: 178rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 26rpx;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.action-icon {
+  width: 58rpx;
+  height: 58rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20rpx;
+  background: #EFE5D3;
+  color: #1F1F1F;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.action-title {
+  margin-top: 22rpx;
+  color: #1F1F1F;
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.action-desc {
+  margin-top: 8rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+  line-height: 1.45;
+}

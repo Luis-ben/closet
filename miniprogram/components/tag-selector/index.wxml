@@ -1,0 +1,12 @@
+<view class="tag-list">
+  <view
+    wx:for="{{innerOptions}}"
+    wx:key="value"
+    class="{{item.className}}"
+    data-value="{{item.value}}"
+    bindtap="onTapTag"
+  >
+    {{item.label}}
+    <text wx:if="{{item.note}}" class="tag-note">{{item.note}}</text>
+  </view>
+</view>

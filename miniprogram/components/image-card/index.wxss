@@ -1,0 +1,112 @@
+.image-card-comp {
+  overflow: hidden;
+  border: 2rpx solid #E9E2D8;
+  border-radius: 24rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.image-card-comp.is-selected {
+  border-color: #C8A96A;
+  box-shadow: 0 14rpx 36rpx rgba(200, 169, 106, 0.22);
+}
+
+.image-wrap {
+  position: relative;
+  width: 100%;
+  height: 280rpx;
+  overflow: hidden;
+  border-radius: 22rpx 22rpx 0 0;
+  background: #EFE5D3;
+}
+
+.image-wrap image,
+.image-loading {
+  width: 100%;
+  height: 100%;
+}
+
+.image-loading {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.placeholder-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+}
+
+.placeholder-mark {
+  width: 52rpx;
+  height: 52rpx;
+  border: 2rpx solid #D8CCBA;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.badge {
+  position: absolute;
+  left: 16rpx;
+  top: 16rpx;
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1F1F1F;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.check-mark {
+  position: absolute;
+  right: 16rpx;
+  top: 16rpx;
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50%;
+  background: #C8A96A;
+  color: #FFFFFF;
+  font-size: 26rpx;
+  line-height: 42rpx;
+  text-align: center;
+}
+
+.delete-button {
+  position: absolute;
+  right: 14rpx;
+  top: 14rpx;
+  width: 46rpx;
+  height: 46rpx;
+  border-radius: 50%;
+  background: rgba(31, 31, 31, 0.78);
+  color: #FFFFFF;
+  font-size: 34rpx;
+  line-height: 42rpx;
+  text-align: center;
+}
+
+.meta {
+  padding: 18rpx;
+}
+
+.meta-title {
+  color: #1F1F1F;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.meta-subtitle {
+  margin-top: 6rpx;
+  color: #7A746E;
+  font-size: 22rpx;
+}

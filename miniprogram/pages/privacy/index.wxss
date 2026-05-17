@@ -1,0 +1,77 @@
+.privacy-page {
+  padding-top: 40rpx;
+}
+
+.privacy-card {
+  display: grid;
+  gap: 20rpx;
+  padding: 30rpx;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.privacy-item {
+  display: grid;
+  grid-template-columns: 18rpx minmax(0, 1fr);
+  gap: 16rpx;
+  align-items: start;
+  color: #1F1F1F;
+  font-size: 27rpx;
+  line-height: 1.5;
+}
+
+.privacy-dot {
+  width: 14rpx;
+  height: 14rpx;
+  margin-top: 12rpx;
+  border-radius: 50%;
+  background: #C8A96A;
+}
+
+.danger-list {
+  overflow: hidden;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.danger-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #F2ECE3;
+}
+
+.danger-item:last-child {
+  border-bottom: 0;
+}
+
+.danger-title {
+  color: #1F1F1F;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.danger-note {
+  margin-top: 8rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+}
+
+.danger-action {
+  flex-shrink: 0;
+  color: #D64545;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.danger-action.strong {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #FFF5F5;
+}

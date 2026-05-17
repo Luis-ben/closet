@@ -1,0 +1,65 @@
+<view class="page profile-page">
+  <view class="section user-card">
+    <view class="avatar">
+      <image wx:if="{{avatarUrl}}" mode="aspectFill" src="{{avatarUrl}}" />
+      <text wx:else>{{avatarText}}</text>
+    </view>
+    <view class="user-main">
+      <view class="user-name">{{nickname}}</view>
+      <view class="user-sub">AI 衣镜用户</view>
+    </view>
+    <view class="plan-pill">{{planText}}</view>
+  </view>
+
+  <view class="section credits-card">
+    <view>
+      <view class="credits-label">剩余生成次数</view>
+      <view class="credits-number">{{credits}}</view>
+      <view class="credits-desc">可用于生成 AI 试穿图</view>
+    </view>
+    <view class="credits-action" bindtap="onGetCredits">获取更多次数</view>
+  </view>
+
+  <view class="section menu-card">
+    <view class="menu-item" bindtap="onOpenModel">
+      <view>
+        <view class="menu-title">我的模特</view>
+        <view class="menu-note">管理默认试穿形象</view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+    <view class="menu-item" bindtap="onOpenWorks">
+      <view>
+        <view class="menu-title">我的作品</view>
+        <view class="menu-note">查看历史生成和灵感</view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+    <view class="menu-item" bindtap="onOpenPrivacy">
+      <view>
+        <view class="menu-title">隐私设置</view>
+        <view class="menu-note">管理照片与账号数据</view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+    <view class="menu-item" bindtap="onContact">
+      <view>
+        <view class="menu-title">联系客服</view>
+        <view class="menu-note">反馈问题和建议</view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+    <view class="menu-item" bindtap="onAbout">
+      <view>
+        <view class="menu-title">关于我们</view>
+        <view class="menu-note">产品版本与说明</view>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="profile-footer">
+    <view>你的照片仅用于生成试穿预览</view>
+    <view>版本 0.1.0</view>
+  </view>
+</view>

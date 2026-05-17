@@ -1,0 +1,23 @@
+<view class="{{cardClassName}}" bindtap="onTap">
+  <view class="{{wrapClassName}}">
+    <image
+      wx:if="{{showImage}}"
+      mode="aspectFill"
+      src="{{resolvedSrc}}"
+      bindload="onImageLoad"
+      binderror="onImageError"
+    />
+    <view wx:if="{{loading}}" class="image-loading skeleton"></view>
+    <view wx:if="{{showPlaceholder}}" class="placeholder-content">
+      <view class="placeholder-mark"></view>
+      <view>{{loadFailed ? '图片加载失败' : placeholder}}</view>
+    </view>
+    <view wx:if="{{badge}}" class="badge">{{badge}}</view>
+    <view wx:if="{{selected}}" class="check-mark">✓</view>
+    <view wx:if="{{showDelete}}" class="delete-button" catchtap="onDelete">{{deleteText}}</view>
+  </view>
+  <view wx:if="{{showMeta}}" class="meta">
+    <view wx:if="{{title}}" class="meta-title">{{title}}</view>
+    <view wx:if="{{subtitle}}" class="meta-subtitle">{{subtitle}}</view>
+  </view>
+</view>

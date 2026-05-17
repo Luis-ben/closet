@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "CommonJS",
+    "strict": true,
+    "noImplicitThis": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["miniprogram-api-typings"]
+  },
+  "include": [
+    "app.ts",
+    "components/**/*.ts",
+    "pages/**/*.ts",
+    "utils/**/*.ts"
+  ]
+}

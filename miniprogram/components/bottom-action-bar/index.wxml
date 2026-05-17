@@ -1,0 +1,7 @@
+<view class="bottom-bar">
+  <view wx:if="{{leftText}}" class="bottom-info">{{leftText}}</view>
+  <view class="bottom-button {{disabled || loading ? 'is-disabled' : ''}}" bindtap="onAction">
+    <view wx:if="{{loading}}" class="loading-dot"></view>
+    <text>{{loading ? loadingText : buttonText}}</text>
+  </view>
+</view>

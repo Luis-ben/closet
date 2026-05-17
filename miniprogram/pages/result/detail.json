@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "生成结果",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index"
+  }
+}

@@ -1,0 +1,155 @@
+.current-model-card {
+  position: relative;
+  height: 720rpx;
+  overflow: hidden;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 32rpx;
+  background: #EFE5D3;
+  box-shadow: 0 16rpx 42rpx rgba(31, 31, 31, 0.08);
+}
+
+.current-model-card image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.current-badge {
+  position: absolute;
+  left: 24rpx;
+  top: 24rpx;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1F1F1F;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.model-info {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 24rpx;
+  padding: 24rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.72);
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.model-name {
+  color: #1F1F1F;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.model-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 10rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+}
+
+.dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #C8A96A;
+}
+
+.model-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18rpx;
+}
+
+.tip-card {
+  display: grid;
+  gap: 14rpx;
+  padding: 28rpx;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.tip-row {
+  position: relative;
+  padding-left: 24rpx;
+  color: #1F1F1F;
+  font-size: 26rpx;
+  line-height: 1.45;
+}
+
+.tip-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #C8A96A;
+}
+
+.model-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.model-list {
+  display: flex;
+  gap: 18rpx;
+}
+
+.model-mini-card {
+  width: 214rpx;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2rpx solid #E9E2D8;
+  border-radius: 24rpx;
+  background: #FFFFFF;
+  box-shadow: 0 8rpx 22rpx rgba(31, 31, 31, 0.04);
+}
+
+.model-mini-card.active {
+  border-color: #C8A96A;
+  box-shadow: 0 12rpx 28rpx rgba(200, 169, 106, 0.2);
+}
+
+.model-mini-card image {
+  width: 100%;
+  height: 260rpx;
+  display: block;
+  background: #EFE5D3;
+}
+
+.model-mini-meta {
+  padding: 14rpx;
+}
+
+.mini-name {
+  color: #1F1F1F;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.status {
+  margin-top: 6rpx;
+  color: #7A746E;
+  font-size: 22rpx;
+}
+
+.status.pass {
+  color: #2F7D51;
+}
+
+.status.reject {
+  color: #D64545;
+}
+
+.status.pending {
+  color: #A06F18;
+}

@@ -1,0 +1,149 @@
+.profile-page {
+  padding-top: 40rpx;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 28rpx;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 32rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.avatar {
+  width: 112rpx;
+  height: 112rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #111111;
+  color: #FFFFFF;
+  font-size: 42rpx;
+  font-weight: 800;
+}
+
+.avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.user-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  color: #1F1F1F;
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.user-sub {
+  margin-top: 8rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+}
+
+.plan-pill {
+  flex-shrink: 0;
+  padding: 10rpx 16rpx;
+  border: 1rpx solid rgba(200, 169, 106, 0.42);
+  border-radius: 999rpx;
+  background: #EFE5D3;
+  color: #1F1F1F;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.credits-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  background: #111111;
+  color: #FFFFFF;
+  box-shadow: 0 16rpx 42rpx rgba(17, 17, 17, 0.16);
+}
+
+.credits-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24rpx;
+}
+
+.credits-number {
+  margin-top: 8rpx;
+  font-size: 72rpx;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.credits-desc {
+  margin-top: 12rpx;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24rpx;
+}
+
+.credits-action {
+  flex-shrink: 0;
+  padding: 16rpx 22rpx;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #111111;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.menu-card {
+  overflow: hidden;
+  border: 1rpx solid #E9E2D8;
+  border-radius: 28rpx;
+  background: #FFFFFF;
+  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 28rpx;
+  border-bottom: 1rpx solid #F2ECE3;
+}
+
+.menu-item:last-child {
+  border-bottom: 0;
+}
+
+.menu-title {
+  color: #1F1F1F;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.menu-note {
+  margin-top: 6rpx;
+  color: #7A746E;
+  font-size: 24rpx;
+}
+
+.menu-arrow {
+  color: #C8A96A;
+  font-size: 42rpx;
+  line-height: 1;
+}
+
+.profile-footer {
+  display: grid;
+  gap: 10rpx;
+  margin-top: 46rpx;
+  color: #9B9288;
+  font-size: 24rpx;
+  text-align: center;
+}

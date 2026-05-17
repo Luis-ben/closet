@@ -1,0 +1,63 @@
+<view class="page inspiration-page">
+  <view class="section page-intro">
+    <view class="title">穿搭灵感</view>
+    <view class="subtitle">保存你的 AI 试穿作品</view>
+  </view>
+
+  <view class="section">
+    <section-header title="最近生成" subtitle="生成成功的试穿图会沉淀在这里" />
+    <scroll-view wx:if="{{loading}}" scroll-x class="result-scroll" enable-flex>
+      <view class="result-row">
+        <view class="result-skeleton skeleton"></view>
+        <view class="result-skeleton skeleton"></view>
+      </view>
+    </scroll-view>
+    <scroll-view wx:elif="{{recentResults.length}}" scroll-x class="result-scroll" enable-flex>
+      <view class="result-row">
+        <view
+          wx:for="{{recentResults}}"
+          wx:key="taskId"
+          class="result-card"
+          data-id="{{item.taskId}}"
+          bindtap="onOpenResult"
+        >
+          <image-card image-url="{{item.imageUrl}}" title="{{item.title}}" subtitle="{{item.subtitle}}" placeholder="作品" />
+        </view>
+      </view>
+    </scroll-view>
+    <empty-state
+      wx:else
+      title="还没有生成作品"
+      description="去试穿页生成第一张穿搭图"
+      button-text="去试穿"
+      bindaction="onGoTryon"
+    />
+  </view>
+
+  <view class="section">
+    <section-header title="风格模板" subtitle="点一下，带着风格回到试穿页" />
+    <view class="template-grid">
+      <view
+        wx:for="{{styleTemplates}}"
+        wx:key="value"
+        class="template-card"
+        data-style="{{item.value}}"
+        bindtap="onUseTemplate"
+      >
+        <view class="template-title">{{item.title}}</view>
+        <view class="template-desc">{{item.description}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section recommendation-card">
+    <view class="recommendation-copy">
+      <view class="module-title">{{recommendationTitle}}</view>
+      <view class="caption">{{recommendationDesc}}</view>
+    </view>
+    <view wx:if="{{recommendationItems.length}}" class="recommendation-images">
+      <image wx:for="{{recommendationItems}}" wx:key="_id" mode="aspectFill" src="{{item.imageUrl}}" />
+    </view>
+    <view wx:else class="recommendation-empty" bindtap="onGoTryon">去试穿</view>
+  </view>
+</view>

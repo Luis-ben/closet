@@ -1,0 +1,29 @@
+<view class="page status-page">
+  <view class="status-card">
+    <view class="loader-wrap {{status}}">
+      <view class="loader-ring"></view>
+      <view class="loader-core"></view>
+      <view class="loader-glow"></view>
+    </view>
+
+    <view class="status-text">{{statusText}}</view>
+    <view class="status-hint">{{hintText}}</view>
+
+    <view class="progress-track">
+      <view class="progress-bar" style="width: {{progress}}%;"></view>
+    </view>
+    <view class="progress-label">{{progress}}%</view>
+
+    <view class="wait-copy">
+      <view>通常需要 10-30 秒</view>
+      <view>请不要关闭页面</view>
+    </view>
+
+    <view wx:if="{{errorMessage}}" class="error-card">{{errorMessage}}</view>
+  </view>
+
+  <view wx:if="{{showFailedActions}}" class="status-actions">
+    <view class="primary-button" bindtap="onRetry">重试</view>
+    <view class="secondary-button" bindtap="onBackTryon">返回试穿</view>
+  </view>
+</view>

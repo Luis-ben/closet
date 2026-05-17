@@ -1,0 +1,64 @@
+<view class="page cloth-edit-page">
+  <view class="section page-intro">
+    <view class="title">上传衣物</view>
+    <view class="subtitle">添加衣柜单品，用于 AI 试穿生成</view>
+  </view>
+
+  <view class="section upload-box {{imageUrl ? 'has-image' : ''}}" bindtap="onChooseImage">
+    <image wx:if="{{imageUrl}}" mode="aspectFill" src="{{imageUrl}}" />
+    <view wx:if="{{imageUrl}}" class="upload-change">重新选择</view>
+    <view wx:else class="upload-placeholder">
+      <view class="camera-icon"></view>
+      <view class="upload-title">上传衣物照片</view>
+      <view class="caption">建议使用干净背景，识别更准确</view>
+    </view>
+  </view>
+
+  <view class="section tip-card">
+    <view class="tip-title">上传提示</view>
+    <view class="tip-copy">AI 会根据衣物图片生成试穿预览，请尽量上传完整、清晰的单品照片。</view>
+  </view>
+
+  <view class="section form-section">
+    <view class="form-block">
+      <section-header title="分类" subtitle="选择最接近的衣物类型" />
+      <tag-selector options="{{categoryOptions}}" value="{{category}}" bindchange="onCategoryChange" />
+    </view>
+
+    <view class="form-block">
+      <section-header title="颜色" />
+      <tag-selector options="{{colorOptions}}" value="{{color}}" bindchange="onColorChange" />
+    </view>
+
+    <view class="form-block">
+      <section-header title="季节" />
+      <tag-selector options="{{seasonOptions}}" value="{{season}}" multiple max="{{4}}" bindchange="onSeasonChange" />
+    </view>
+
+    <view class="form-block">
+      <section-header title="场合" />
+      <tag-selector options="{{occasionOptions}}" value="{{occasion}}" multiple max="{{4}}" bindchange="onOccasionChange" />
+    </view>
+
+    <view class="form-block">
+      <section-header title="备注" />
+      <textarea
+        class="note-input"
+        placeholder="例如：宽松版型、适合秋天、偏正式"
+        maxlength="200"
+        value="{{note}}"
+        bindinput="onNoteInput"
+      />
+    </view>
+  </view>
+
+  <view class="safe-bottom-space"></view>
+  <bottom-action-bar
+    left-text="{{imageUrl ? '已选择图片' : '需要图片和分类'}}"
+    button-text="保存到衣柜"
+    loading-text="保存中"
+    loading="{{saving}}"
+    disabled="{{saveDisabled}}"
+    bindaction="onSave"
+  />
+</view>

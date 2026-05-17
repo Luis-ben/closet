@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "灵感",
+  "usingComponents": {
+    "section-header": "/components/section-header/index",
+    "empty-state": "/components/empty-state/index",
+    "image-card": "/components/image-card/index"
+  }
+}

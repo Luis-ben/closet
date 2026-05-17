@@ -1,0 +1,48 @@
+<view class="page result-page">
+  <view class="section page-intro">
+    <view class="title">生成结果</view>
+    <view class="subtitle">你的 AI 试穿海报已经准备好</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="poster-skeleton skeleton"></view>
+
+  <view wx:elif="{{resultImageUrl && !imageLoadFailed}}" class="poster-card">
+    <image class="poster-image" mode="aspectFill" src="{{resultImageUrl}}" binderror="onImageError" />
+    <view class="poster-badge">AI 试穿</view>
+  </view>
+
+  <empty-state
+    wx:else
+    title="结果图不可用"
+    description="生成结果为空或已经失效，可以返回试穿页重新生成。"
+    button-text="再生成"
+    bindaction="onRegenerate"
+  />
+
+  <view wx:if="{{resultImageUrl && !imageLoadFailed}}" class="section info-card">
+    <view class="module-title">生成信息</view>
+    <view class="info-row">
+      <text>使用衣物</text>
+      <text>{{clothingCount}} 件</text>
+    </view>
+    <view class="info-row">
+      <text>风格</text>
+      <text>{{styleText}}</text>
+    </view>
+    <view class="info-row">
+      <text>生成时间</text>
+      <text>{{generatedAtText}}</text>
+    </view>
+    <view class="info-row">
+      <text>模特</text>
+      <text>{{modelText}}</text>
+    </view>
+  </view>
+
+  <view class="safe-bottom-space"></view>
+  <view wx:if="{{resultImageUrl && !imageLoadFailed}}" class="result-actions">
+    <view class="primary-button" bindtap="onSave">保存图片</view>
+    <view class="secondary-button" bindtap="onRegenerate">再生成</view>
+    <button class="share-button secondary-button" open-type="share">分享</button>
+  </view>
+</view>
