@@ -59,6 +59,18 @@ Page({
 
   onLoad(options: Record<string, string | undefined>) {
     const taskId = options.taskId ?? "";
+
+    if (!taskId) {
+      this.setData({
+        status: "failed",
+        statusText: statusTextMap.failed,
+        hintText: "缺少任务 ID，请重新发起试穿",
+        progress: 100,
+        showFailedActions: true
+      });
+      return;
+    }
+
     this.setData({
       taskId
     });

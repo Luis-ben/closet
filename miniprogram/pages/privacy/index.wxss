@@ -6,10 +6,10 @@
   display: grid;
   gap: 20rpx;
   padding: 30rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .privacy-item {
@@ -17,7 +17,7 @@
   grid-template-columns: 18rpx minmax(0, 1fr);
   gap: 16rpx;
   align-items: start;
-  color: #1F1F1F;
+  color: #202124;
   font-size: 27rpx;
   line-height: 1.5;
 }
@@ -27,15 +27,15 @@
   height: 14rpx;
   margin-top: 12rpx;
   border-radius: 50%;
-  background: #C8A96A;
+  background: #1A73E8;
 }
 
 .danger-list {
   overflow: hidden;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .danger-item {
@@ -44,7 +44,7 @@
   justify-content: space-between;
   gap: 20rpx;
   padding: 30rpx;
-  border-bottom: 1rpx solid #F2ECE3;
+  border-bottom: 1rpx solid #F1F3F4;
 }
 
 .danger-item:last-child {
@@ -52,14 +52,14 @@
 }
 
 .danger-title {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 28rpx;
   font-weight: 700;
 }
 
 .danger-note {
   margin-top: 8rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
 }
 

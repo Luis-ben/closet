@@ -3,6 +3,7 @@ import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
 import { store } from "../../store/mockStore";
 import type { UserPhotoRecord } from "../../store/types";
+import { AppError } from "../../utils/errors";
 import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { allowedImageMimeTypes, maxImageSizeBytes, parseWithSchema } from "../../utils/validation";
@@ -24,6 +25,10 @@ const createUserPhotoBodySchema = z.object({
     }),
   imageMeta: imageMetaSchema,
   displayName: z.string().min(1).max(40).default("我的模特")
+});
+
+const photoParamsSchema = z.object({
+  id: z.string().min(1)
 });
 
 export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
@@ -76,6 +81,41 @@ export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
 
       return ok({
         items: personalModels
+      });
+    }
+  );
+
+  app.post(
+    "/user-photos/:id/activate",
+    {
+      preHandler: authenticateRequest
+    },
+    async (request) => {
+      const params = parseWithSchema(photoParamsSchema, request.params);
+      const userId = request.user!.id;
+      const now = nowIso();
+      const model = store.userPhotos.find(
+        (photo) =>
+          photo._id === params.id &&
+          photo.userId === userId &&
+          photo.type === "personal_model" &&
+          photo.auditStatus === "pass" &&
+          !photo.deletedAt
+      );
+
+      if (!model) {
+        throw new AppError(404, "MODEL_PHOTO_NOT_FOUND", "我的模特不存在");
+      }
+
+      for (const photo of store.userPhotos) {
+        if (photo.userId === userId && photo.type === "personal_model" && !photo.deletedAt) {
+          photo.isActiveModel = photo._id === model._id;
+          photo.updatedAt = now;
+        }
+      }
+
+      return ok({
+        photo: model
       });
     }
   );

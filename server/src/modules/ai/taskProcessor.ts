@@ -32,6 +32,10 @@ export async function processOutfitTask(
     return;
   }
 
+  if (task.status !== "queued") {
+    return;
+  }
+
   task.status = "running";
   task.updatedAt = nowIso();
 

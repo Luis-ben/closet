@@ -53,6 +53,9 @@ Page({
         cubeReady: false,
         cubeTitle: "搭配魔方",
         cubeDesc: "从衣柜里自动拼一套，上装、下装和鞋包都能单独替换。",
+        cubeStyleValue: "commute",
+        cubeStyleLabel: "通勤方案",
+        cubeStyleTone: "冷静蓝灰",
         cubeButtonText: "使用这套",
         cubeIndex: 0,
         recommendationTitle: "先上传衣服",
@@ -135,6 +138,7 @@ Page({
     },
     buildCubeState(items, cubeIndex) {
         const usedIds = [];
+        const styleTemplate = styleTemplates[cubeIndex % styleTemplates.length];
         const cubeSlots = cubeSlotDefs.map((slot, slotIndex) => {
             var _a, _b, _c;
             const picked = this.pickItemByCategories(items, slot.categories, cubeIndex + slotIndex, usedIds);
@@ -159,8 +163,11 @@ Page({
             cubeReady,
             cubeTitle: cubeReady ? "搭配魔方" : "搭配魔方待填充",
             cubeDesc: cubeReady
-                ? `已拼好 ${usedIds.length} 件衣物，可直接带去 AI 试穿。`
+                ? `已拼好 ${usedIds.length} 件衣物，推荐 ${styleTemplate.title} 风格。`
                 : "先上传几件上衣、下装或鞋包，魔方会自动组成一套。",
+            cubeStyleValue: styleTemplate.value,
+            cubeStyleLabel: `${styleTemplate.title}方案`,
+            cubeStyleTone: styleTemplate.tone,
             cubeButtonText: cubeReady ? "使用这套" : "去上传衣服"
         };
     },
@@ -192,6 +199,7 @@ Page({
             return;
         }
         wx.setStorageSync(pendingClothingItemIdsStorageKey, this.data.cubeItemIds);
+        wx.setStorageSync(pendingStyleStorageKey, this.data.cubeStyleValue);
         wx.switchTab({
             url: "/pages/tryon/index"
         });

@@ -9,6 +9,7 @@
     <view class="cube-copy">
       <view>
         <view class="module-title">{{cubeTitle}}</view>
+        <view class="cube-style-pill">{{cubeStyleLabel}} · {{cubeStyleTone}}</view>
         <view class="caption">{{cubeDesc}}</view>
       </view>
       <view class="cube-actions">

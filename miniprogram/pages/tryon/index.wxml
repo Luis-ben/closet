@@ -22,6 +22,7 @@
 
   <view class="section selected-section">
     <section-header title="已选衣物 {{selectedClothingItems.length}}/3" subtitle="再次点击已选衣物可取消选择" />
+    <view wx:if="{{outfitNotice}}" class="outfit-notice">{{outfitNotice}}</view>
     <view class="selected-slots">
       <view
         wx:for="{{selectedSlots}}"

@@ -65,7 +65,7 @@ page {
 }
 
 .muted {
-  color: #7A746E;
+  color: #5F6368;
 }
 
 .primary-actions {

@@ -3,24 +3,35 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AI 衣柜小程序页面预览</title>
+    <title>AI 衣镜小程序新版页面预览</title>
     <style>
       * {
         box-sizing: border-box;
       }
 
+      :root {
+        --bg: #f8fafd;
+        --text: #202124;
+        --muted: #5f6368;
+        --line: #e8eaed;
+        --chip: #e8f0fe;
+        --blue: #1a73e8;
+        --blue-text: #174ea6;
+        --shadow: 0 6px 18px rgba(60, 64, 67, 0.08);
+      }
+
       body {
         margin: 0;
-        background: #f3f4f6;
-        color: #111827;
+        background: #eef2f7;
+        color: var(--text);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
       header {
         position: sticky;
         top: 0;
-        z-index: 2;
-        border-bottom: 1px solid #e5e7eb;
+        z-index: 5;
+        border-bottom: 1px solid var(--line);
         background: rgba(255, 255, 255, 0.96);
         padding: 18px 28px;
       }
@@ -32,24 +43,24 @@
 
       .note {
         margin-top: 6px;
-        color: #6b7280;
+        color: var(--muted);
         font-size: 13px;
       }
 
       .board {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+        gap: 26px;
         padding: 28px;
       }
 
       .phone {
-        height: 720px;
+        height: 760px;
         overflow: hidden;
-        border: 1px solid #e5e7eb;
-        border-radius: 28px;
-        background: #f7f8fa;
-        box-shadow: 0 18px 45px rgba(17, 24, 39, 0.12);
+        border: 1px solid #dfe3ea;
+        border-radius: 30px;
+        background: var(--bg);
+        box-shadow: 0 18px 45px rgba(32, 33, 36, 0.12);
       }
 
       .nav {
@@ -57,13 +68,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-bottom: 1px solid #eef0f3;
-        background: #fff;
-        font-weight: 650;
+        border-bottom: 1px solid var(--line);
+        background: var(--bg);
+        font-weight: 700;
       }
 
       .content {
-        height: 612px;
+        height: 652px;
         overflow: hidden;
         padding: 18px;
       }
@@ -73,244 +84,695 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         align-items: center;
-        border-top: 1px solid #eef0f3;
+        border-top: 1px solid var(--line);
         background: #fff;
-        color: #6b7280;
+        color: var(--muted);
         font-size: 12px;
         text-align: center;
       }
 
       .tabbar .active {
-        color: #111827;
-        font-weight: 700;
+        color: #111;
+        font-weight: 800;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        margin-bottom: 8px;
+        padding: 0 10px;
+        border: 1px solid #d2e3fc;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--blue-text);
+        font-size: 11px;
+        font-weight: 800;
       }
 
       .title {
+        color: var(--text);
         font-size: 24px;
-        font-weight: 760;
+        font-weight: 800;
         line-height: 1.18;
       }
 
-      .subtitle {
+      .subtitle,
+      .caption {
         margin-top: 7px;
-        color: #6b7280;
+        color: var(--muted);
         font-size: 13px;
         line-height: 1.5;
       }
 
-      .hero,
-      .result {
-        margin-top: 18px;
-        height: 238px;
+      .row {
         display: flex;
         align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        background: #e9ecef;
-        color: #6b7280;
-        font-size: 13px;
+        gap: 10px;
       }
 
-      .result {
-        height: 430px;
-        background: #eef0f3;
-      }
-
-      .actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+      .between {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
         gap: 12px;
-        margin-top: 16px;
       }
 
       .button {
-        height: 44px;
+        height: 34px;
+        min-width: 72px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
-        background: #111827;
+        border-radius: 999px;
+        background: #111;
         color: #fff;
-        font-weight: 700;
-        font-size: 14px;
+        font-size: 12px;
+        font-weight: 800;
       }
 
       .button.light {
+        border: 1px solid #dadce0;
         background: #fff;
-        color: #111827;
-        border: 1px solid #e5e7eb;
+        color: var(--text);
+      }
+
+      .section {
+        margin-top: 18px;
       }
 
       .card {
-        margin-top: 16px;
+        border: 1px solid var(--line);
         border-radius: 8px;
         background: #fff;
-        padding: 16px;
-        box-shadow: 0 8px 22px rgba(17, 24, 39, 0.06);
+        padding: 14px;
+        box-shadow: var(--shadow);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px 10px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .stat span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .model-card {
+        display: grid;
+        grid-template-columns: 74px 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .model-img,
+      .poster,
+      .hero-img,
+      .thumb,
+      .tile-img,
+      .cube-slot {
+        background:
+          linear-gradient(135deg, rgba(26, 115, 232, 0.18), rgba(52, 168, 83, 0.16)),
+          #eef2f7;
+      }
+
+      .model-img {
+        height: 94px;
+        border-radius: 8px;
+      }
+
+      .pill {
+        display: inline-flex;
+        height: 24px;
+        align-items: center;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: #f1f3f4;
+        color: #3c4043;
+        font-size: 11px;
+        font-weight: 800;
       }
 
       .chips {
         display: flex;
         gap: 8px;
-        margin: 14px 0;
+        overflow: hidden;
       }
 
       .chip {
+        flex: 0 0 auto;
+        border: 1px solid #dadce0;
         border-radius: 999px;
         background: #fff;
-        padding: 8px 13px;
-        color: #6b7280;
+        padding: 8px 12px;
+        color: #3c4043;
         font-size: 12px;
+        font-weight: 700;
       }
 
       .chip.active {
-        color: #111827;
-        font-weight: 700;
+        border-color: #d2e3fc;
+        background: var(--chip);
+        color: var(--blue-text);
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(4, 82px);
+        gap: 8px;
+        overflow: hidden;
+      }
+
+      .thumb {
+        position: relative;
+        height: 108px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .thumb span,
+      .cube-slot span {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        padding: 4px 6px;
+        font-size: 10px;
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 10px;
       }
 
       .tile {
         overflow: hidden;
+        border: 1px solid var(--line);
         border-radius: 8px;
         background: #fff;
+        box-shadow: var(--shadow);
       }
 
       .tile-img {
-        height: 130px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #edf0f2;
-        color: #9ca3af;
-        font-size: 12px;
+        height: 132px;
       }
 
       .tile-text {
-        padding: 10px;
+        padding: 9px;
         font-size: 12px;
       }
 
-      .model {
-        height: 330px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        background: #eef0f3;
-        color: #6b7280;
+      .tile-text b {
+        display: block;
+        margin-bottom: 4px;
       }
 
-      .bottom-button {
+      .cube {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 110px 110px;
+        gap: 8px;
+      }
+
+      .cube-style {
+        display: inline-flex;
+        height: 24px;
+        align-items: center;
+        margin-top: 8px;
+        padding: 0 9px;
+        border: 1px solid #d2e3fc;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--blue-text);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .cube-slot {
         position: relative;
-        top: 12px;
-        height: 48px;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .cube-slot.tall {
+        grid-row: span 2;
+      }
+
+      .templates {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .template {
+        min-height: 90px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px;
+        box-shadow: var(--shadow);
+      }
+
+      .template:nth-child(2n) {
+        background: #fbfaff;
+      }
+
+      .template b {
+        display: block;
+        font-size: 15px;
+      }
+
+      .template em {
+        display: block;
+        margin-top: 5px;
+        color: var(--blue);
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      .tryon-canvas {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(32, 33, 36, 0.45)),
+          linear-gradient(135deg, rgba(251, 188, 5, 0.18), rgba(26, 115, 232, 0.18)),
+          #eef2f7;
+        box-shadow: var(--shadow);
+      }
+
+      .canvas-copy {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        color: #fff;
+      }
+
+      .canvas-copy b {
+        display: block;
+        font-size: 18px;
+      }
+
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .notice {
+        margin: 10px 0;
+        border: 1px solid #d2e3fc;
+        border-radius: 8px;
+        background: var(--chip);
+        color: var(--blue-text);
+        padding: 10px 12px;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.45;
+      }
+
+      .slot {
+        height: 92px;
+        border: 1px dashed #dadce0;
+        border-radius: 8px;
+        background: #fff;
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .slot.filled {
+        border-style: solid;
+        border-color: var(--blue);
+        background: var(--chip);
+        color: var(--blue-text);
+        font-weight: 800;
+      }
+
+      .bottom-bar {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .upload-box {
+        height: 245px;
         display: flex;
         align-items: center;
         justify-content: center;
+        border: 1px dashed #dadce0;
         border-radius: 8px;
-        background: #111827;
-        color: #fff;
-        font-weight: 750;
+        background: #fff;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .poster {
+        position: relative;
+        height: 470px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .poster .badge {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 2;
+      }
+
+      .info-row b {
+        color: var(--text);
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>AI 衣柜小程序页面预览</h1>
-      <div class="note">这是静态视觉预览。真实小程序请用微信开发者工具打开 miniprogram/ 目录。</div>
+      <h1>AI 衣镜小程序新版页面预览</h1>
+      <div class="note">静态预览用于快速看页面方向；真实交互以微信开发者工具打开 miniprogram/ 为准。</div>
     </header>
 
     <main class="board">
       <section class="phone">
-        <div class="nav">搭搭衣橱</div>
+        <div class="nav">衣柜</div>
         <div class="content">
-          <div class="title">今天穿什么</div>
-          <div class="subtitle">上传衣服，选择模特，生成一套干净自然的试穿预览。</div>
-          <div class="hero">今日推荐大图</div>
-          <div class="actions">
-            <div class="button">上传衣服</div>
-            <div class="button light">AI 试穿</div>
+          <div class="between">
+            <div>
+              <div class="eyebrow">AI 衣物相册</div>
+              <div class="title">我的衣柜</div>
+              <div class="subtitle">像翻相册一样浏览衣物，点进单品可继续试穿</div>
+            </div>
+            <div>
+              <div class="button">上传</div>
+              <div class="button light" style="margin-top:8px">试穿</div>
+            </div>
           </div>
-          <div class="card">
-            <strong>我的模特</strong>
-            <div class="subtitle">上传全身照后，试穿会默认使用你的专属模特。</div>
+
+          <div class="section stats">
+            <div class="stat"><strong>24</strong><span>总衣物</span></div>
+            <div class="stat"><strong>16</strong><span>相册导入</span></div>
+            <div class="stat"><strong>21</strong><span>可试穿</span></div>
           </div>
-          <div class="card">
-            <strong>最近生成</strong>
-            <div class="subtitle">还没有生成记录</div>
+
+          <div class="section card model-card">
+            <div class="model-img"></div>
+            <div>
+              <span class="pill">当前试穿模特</span>
+              <div style="margin-top:9px;font-weight:800">我的专属模特</div>
+              <div class="caption">当前会优先使用你的个人模特</div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="between"><b>最近导入</b><span class="caption" style="margin:0">上传衣服</span></div>
+            <div class="gallery" style="margin-top:10px">
+              <div class="thumb"><span>相册</span></div>
+              <div class="thumb"><span>商品图</span></div>
+              <div class="thumb"><span>网图</span></div>
+              <div class="thumb"><span>拍照</span></div>
+            </div>
+          </div>
+
+          <div class="section chips">
+            <span class="chip active">全部来源 24</span>
+            <span class="chip">相册 16</span>
+            <span class="chip">商品图 4</span>
+          </div>
+
+          <div class="section chips">
+            <span class="chip active">全部 24</span>
+            <span class="chip">上衣 8</span>
+            <span class="chip">下装 7</span>
+            <span class="chip">鞋包 5</span>
+          </div>
+
+          <div class="section grid">
+            <div class="tile"><div class="tile-img"></div><div class="tile-text"><b>白</b>上衣 · 使用 3 次</div></div>
+            <div class="tile"><div class="tile-img"></div><div class="tile-text"><b>黑</b>裙装 · 使用 1 次</div></div>
           </div>
         </div>
-        <div class="tabbar"><span class="active">首页</span><span>衣柜</span><span>试穿</span><span>我的</span></div>
+        <div class="tabbar"><span>试穿</span><span class="active">衣柜</span><span>灵感</span><span>我的</span></div>
       </section>
 
       <section class="phone">
-        <div class="nav">我的衣柜</div>
+        <div class="nav">灵感</div>
         <div class="content">
-          <div class="title">我的衣柜</div>
-          <div class="subtitle">自拍、相册、网图截图和商品图都可以先放进这里。</div>
-          <div class="chips">
-            <span class="chip active">全部</span><span class="chip">上衣</span><span class="chip">下装</span><span class="chip">鞋包</span>
+          <div class="eyebrow">Outfit ideas</div>
+          <div class="title">穿搭灵感</div>
+          <div class="subtitle">像从相册里找灵感一样，把衣柜单品拼成可试穿组合</div>
+
+          <div class="section card">
+            <div class="between">
+              <div>
+                <b>搭配魔方</b>
+                <div class="cube-style">通勤方案 · 冷静蓝灰</div>
+                <div class="caption">已拼好 3 件衣物，推荐通勤风格。</div>
+              </div>
+              <div>
+                <div class="button light">换一组</div>
+                <div class="button" style="margin-top:8px">使用这套</div>
+              </div>
+            </div>
+            <div class="cube" style="margin-top:14px">
+              <div class="cube-slot tall"><span>上装 · 白</span></div>
+              <div class="cube-slot"><span>下装 · 黑</span></div>
+              <div class="cube-slot"><span>鞋包 · 棕</span></div>
+            </div>
           </div>
-          <div class="grid">
-            <div class="tile"><div class="tile-img">上衣图</div><div class="tile-text">上衣 · 白</div></div>
-            <div class="tile"><div class="tile-img">半裙图</div><div class="tile-text">裙装 · 黑</div></div>
-            <div class="tile"><div class="tile-img">鞋子图</div><div class="tile-text">鞋 · 棕</div></div>
-            <div class="tile"><div class="tile-img">包袋图</div><div class="tile-text">包 · 灰</div></div>
+
+          <div class="section">
+            <div class="between"><b>最近生成</b><span class="caption" style="margin:0">生成成功作品</span></div>
+            <div class="grid" style="margin-top:10px">
+              <div class="tile"><div class="tile-img" style="height:150px"></div><div class="tile-text"><b>通勤</b>3 件衣物</div></div>
+              <div class="tile"><div class="tile-img" style="height:150px"></div><div class="tile-text"><b>旅行</b>2 件衣物</div></div>
+            </div>
+          </div>
+
+          <div class="section templates">
+            <div class="template"><b>通勤</b><em>冷静蓝灰</em><div class="caption">利落、克制，适合办公室</div></div>
+            <div class="template"><b>约会</b><em>柔光浅粉</em><div class="caption">柔和一点，保留氛围感</div></div>
+            <div class="template"><b>周末</b><em>轻松绿色</em><div class="caption">舒适自然，适合日常出门</div></div>
+            <div class="template"><b>旅行</b><em>晴天蓝</em><div class="caption">轻松上镜，颜色更明亮</div></div>
           </div>
         </div>
-        <div class="tabbar"><span>首页</span><span class="active">衣柜</span><span>试穿</span><span>我的</span></div>
+        <div class="tabbar"><span>试穿</span><span>衣柜</span><span class="active">灵感</span><span>我的</span></div>
+      </section>
+
+      <section class="phone">
+        <div class="nav">试穿</div>
+        <div class="content">
+          <div class="between">
+            <div>
+              <div class="title">今天想试哪一套？</div>
+              <div class="subtitle">选择模特和衣物，AI 生成你的穿搭预览</div>
+            </div>
+            <span class="chip active">3 次</span>
+          </div>
+
+          <div class="section tryon-canvas">
+            <div class="canvas-copy">
+              <b>我的专属模特</b>
+              <div>把衣柜里的衣服，穿到你身上</div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="between"><b>已选衣物 3/3</b><span class="caption" style="margin:0">点击取消</span></div>
+            <div class="notice">已从搭配魔方带入 3 件衣物和推荐风格，可继续微调</div>
+            <div class="slots" style="margin-top:10px">
+              <div class="slot filled">上衣<br />白色衬衫</div>
+              <div class="slot filled">下装<br />黑色半裙</div>
+              <div class="slot filled">鞋包<br />棕色乐福鞋</div>
+            </div>
+          </div>
+
+          <div class="section chips">
+            <span class="chip active">全部</span>
+            <span class="chip">上衣</span>
+            <span class="chip">下装</span>
+            <span class="chip">鞋包</span>
+          </div>
+
+          <div class="section grid">
+            <div class="tile"><div class="tile-img"></div><div class="tile-text"><b>上衣</b>白</div></div>
+            <div class="tile"><div class="tile-img"></div><div class="tile-text"><b>鞋包</b>棕</div></div>
+          </div>
+
+          <div class="bottom-bar">
+            <span class="caption" style="margin:0">已选 3 件｜消耗 1 次</span>
+            <div class="button">生成试穿图</div>
+          </div>
+        </div>
+        <div class="tabbar"><span class="active">试穿</span><span>衣柜</span><span>灵感</span><span>我的</span></div>
+      </section>
+
+      <section class="phone">
+        <div class="nav">上传衣物</div>
+        <div class="content">
+          <div class="title">上传衣物</div>
+          <div class="subtitle">添加衣柜单品，用于 AI 试穿生成</div>
+          <div class="section upload-box">上传衣物照片</div>
+          <div class="section card" style="background:#e8f0fe;border-color:#d2e3fc">
+            <b style="color:#174ea6">上传提示</b>
+            <div class="caption" style="color:#3c4043">不会默认扫描完整相册，只会上传你这次主动选择的图片。</div>
+          </div>
+          <div class="section"><b>图片来源</b><div class="chips" style="margin-top:10px"><span class="chip active">相册</span><span class="chip">拍照</span><span class="chip">网图截图</span></div></div>
+          <div class="section"><b>分类</b><div class="chips" style="margin-top:10px"><span class="chip active">上衣</span><span class="chip">下装</span><span class="chip">外套</span><span class="chip">鞋包</span></div></div>
+          <div class="section"><b>颜色</b><div class="chips" style="margin-top:10px"><span class="chip active">黑</span><span class="chip">白</span><span class="chip">灰</span><span class="chip">蓝</span></div></div>
+          <div class="bottom-bar">
+            <span class="caption" style="margin:0">已选择图片</span>
+            <div class="button">保存到衣柜</div>
+          </div>
+        </div>
+        <div class="tabbar"><span>试穿</span><span class="active">衣柜</span><span>灵感</span><span>我的</span></div>
+      </section>
+
+      <section class="phone">
+        <div class="nav">生成结果</div>
+        <div class="content">
+          <div class="title">生成结果</div>
+          <div class="subtitle">你的 AI 试穿海报已经准备好</div>
+          <div class="section poster"><span class="badge">AI 试穿</span></div>
+          <div class="section card">
+            <b>生成信息</b>
+            <div class="info-row"><span>使用衣物</span><b>3 件</b></div>
+            <div class="info-row"><span>风格</span><b>通勤</b></div>
+            <div class="info-row"><span>生成时间</span><b>06-09 10:20</b></div>
+            <div class="info-row"><span>模特</span><b>我的专属模特</b></div>
+          </div>
+          <div class="bottom-bar" style="grid-template-columns:1fr 1fr 1fr">
+            <div class="button">保存图片</div>
+            <div class="button light">再生成</div>
+            <div class="button light">分享</div>
+          </div>
+        </div>
+        <div class="tabbar"><span class="active">试穿</span><span>衣柜</span><span>灵感</span><span>我的</span></div>
+      </section>
+
+      <section class="phone">
+        <div class="nav">我的</div>
+        <div class="content">
+          <div class="section card model-card" style="margin-top:0">
+            <div class="model-img" style="width:56px;height:56px;border-radius:50%;background:#111"></div>
+            <div>
+              <div style="font-size:18px;font-weight:800">Mock User</div>
+              <div class="caption">AI 衣镜用户</div>
+            </div>
+            <span class="chip active">免费版</span>
+          </div>
+          <div class="section card" style="background:#111;color:#fff">
+            <div style="opacity:.72;font-size:12px">剩余生成次数</div>
+            <div style="font-size:44px;font-weight:900;line-height:1;margin-top:8px">3</div>
+            <div style="opacity:.72;font-size:12px;margin-top:8px">可用于生成 AI 试穿图</div>
+          </div>
+          <div class="section card" style="padding:0;overflow:hidden">
+            <div class="info-row" style="padding:14px 16px;border-bottom:1px solid #f1f3f4"><span><b>我的模特</b><br />管理默认试穿形象</span><b>›</b></div>
+            <div class="info-row" style="padding:14px 16px;border-bottom:1px solid #f1f3f4"><span><b>我的作品</b><br />查看历史生成和灵感</span><b>›</b></div>
+            <div class="info-row" style="padding:14px 16px;border-bottom:1px solid #f1f3f4"><span><b>隐私设置</b><br />管理照片与账号数据</span><b>›</b></div>
+            <div class="info-row" style="padding:14px 16px"><span><b>联系客服</b><br />反馈问题和建议</span><b>›</b></div>
+          </div>
+          <div class="caption" style="text-align:center;margin-top:28px">你的照片仅用于生成试穿预览<br />版本 0.1.0</div>
+        </div>
+        <div class="tabbar"><span>试穿</span><span>衣柜</span><span>灵感</span><span class="active">我的</span></div>
       </section>
 
       <section class="phone">
         <div class="nav">我的模特</div>
         <div class="content">
           <div class="title">我的模特</div>
-          <div class="subtitle">上传全身照后，AI 试穿会默认使用这个人物。</div>
-          <div class="model">当前模特预览</div>
-          <div class="card">
-            <strong>当前使用：默认模特</strong>
-            <div class="subtitle">分享结果只展示生成图，不暴露原始全身照。</div>
+          <div class="subtitle">选择一个试穿形象，AI 会将衣物融合到模特身上</div>
+          <div class="section tryon-canvas" style="height:360px">
+            <div class="canvas-copy"><b>我的专属模特</b><div>我的专属模特 · 可使用</div></div>
           </div>
-          <div class="actions">
+          <div class="section" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div class="button">上传全身照</div>
-            <div class="button light">使用默认</div>
+            <div class="button light">使用默认模特</div>
+          </div>
+          <div class="section card">
+            <b>上传建议</b>
+            <div class="caption">正面全身照 · 光线清晰 · 背景干净 · 请勿上传他人隐私照片</div>
+          </div>
+          <div class="section gallery">
+            <div class="thumb"><span>可使用</span></div>
+            <div class="thumb"><span>审核中</span></div>
           </div>
         </div>
-        <div class="tabbar"><span>首页</span><span>衣柜</span><span class="active">试穿</span><span>我的</span></div>
+        <div class="tabbar"><span class="active">试穿</span><span>衣柜</span><span>灵感</span><span>我的</span></div>
       </section>
 
       <section class="phone">
-        <div class="nav">AI 试穿</div>
+        <div class="nav">隐私设置</div>
         <div class="content">
-          <div class="title">AI 试穿</div>
-          <div class="subtitle">剩余额度：3</div>
-          <div class="model">默认模特 / 我的模特</div>
-          <div class="subtitle" style="margin-top:16px">选择衣物</div>
-          <div class="grid">
-            <div class="tile"><div class="tile-img">上衣</div><div class="tile-text">已选择</div></div>
-            <div class="tile"><div class="tile-img">下装</div><div class="tile-text">可选择</div></div>
+          <div class="title">隐私设置</div>
+          <div class="subtitle">让你放心上传照片，也能随时管理自己的数据</div>
+          <div class="section card">
+            <div class="row" style="align-items:flex-start;margin-bottom:10px"><b style="color:#1a73e8">●</b><span>你的照片仅用于生成试穿预览</span></div>
+            <div class="row" style="align-items:flex-start;margin-bottom:10px"><b style="color:#1a73e8">●</b><span>你可以随时删除衣物、模特和账号数据</span></div>
+            <div class="row" style="align-items:flex-start"><b style="color:#1a73e8">●</b><span>我们不会公开展示你的个人照片</span></div>
           </div>
-          <div class="bottom-button">生成预览</div>
+          <div class="section card" style="padding:0;overflow:hidden">
+            <div class="info-row" style="padding:16px;border-bottom:1px solid #f1f3f4"><span><b>删除全部衣物</b><br />清空衣柜中的衣物图片</span><b style="color:#d64545">删除</b></div>
+            <div class="info-row" style="padding:16px;border-bottom:1px solid #f1f3f4"><span><b>删除我的模特</b><br />移除已上传的全身照</span><b style="color:#d64545">删除</b></div>
+            <div class="info-row" style="padding:16px"><span><b>注销账号</b><br />账号数据会进入异步清理流程</span><b style="color:#d64545">注销</b></div>
+          </div>
         </div>
-        <div class="tabbar"><span>首页</span><span>衣柜</span><span class="active">试穿</span><span>我的</span></div>
+        <div class="tabbar"><span>试穿</span><span>衣柜</span><span>灵感</span><span class="active">我的</span></div>
       </section>
 
       <section class="phone">
-        <div class="nav">试穿结果</div>
-        <div class="content">
-          <div class="result">AI 生成结果图</div>
-          <div class="actions">
-            <div class="button">保存</div>
-            <div class="button light">分享</div>
+        <div class="nav">生成等待</div>
+        <div class="content" style="display:flex;align-items:center">
+          <div class="card" style="width:100%;text-align:center;padding:34px 18px">
+            <div style="width:94px;height:94px;border:5px solid #e8f0fe;border-top-color:#111;border-radius:50%;margin:0 auto 22px"></div>
+            <div class="title" style="font-size:22px">AI 正在为你试穿搭配</div>
+            <div class="subtitle">请不要关闭页面</div>
+            <div style="height:7px;background:#e8f0fe;border-radius:999px;margin-top:24px;overflow:hidden"><div style="height:100%;width:70%;background:linear-gradient(90deg,#1a73e8,#111)"></div></div>
+            <div class="caption" style="font-weight:800">70%</div>
+            <div class="caption">生成完成后会自动进入结果页</div>
           </div>
-          <div class="card" style="text-align:center;font-weight:700">再生成</div>
         </div>
-        <div class="tabbar"><span>首页</span><span>衣柜</span><span class="active">试穿</span><span>我的</span></div>
+        <div class="tabbar"><span class="active">试穿</span><span>衣柜</span><span>灵感</span><span>我的</span></div>
       </section>
     </main>
   </body>

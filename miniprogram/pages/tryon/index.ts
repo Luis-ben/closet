@@ -103,6 +103,7 @@ Page({
     styleValue: "clean_realistic",
     loading: false,
     submitting: false,
+    outfitNotice: "",
     generateDisabled: true,
     generateButtonText: "请选择衣物",
     bottomText: "已选 0 件｜消耗 1 次"
@@ -163,6 +164,9 @@ Page({
         credits: meResponse.data?.user.credits ?? 0,
         ...modelState,
         clothingItems,
+        outfitNotice: pendingSelectedIds.length
+          ? `已从搭配魔方带入 ${selectedClothingItemIds.length} 件衣物和推荐风格，可继续微调`
+          : "",
         loading: false
       });
       this.syncView(selectedClothingItemIds, this.data.activeCategory);

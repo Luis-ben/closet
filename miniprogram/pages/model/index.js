@@ -103,7 +103,7 @@ Page({
         });
         (0, feedback_1.showToast)("已切换为默认模特", "success");
     },
-    onSelectLocalModel(event) {
+    async onSelectLocalModel(event) {
         const id = event.currentTarget.dataset.id;
         const model = this.data.modelCards.find((item) => item._id === id);
         if (!model) {
@@ -113,17 +113,29 @@ Page({
             (0, feedback_1.showToast)("该模特暂不可使用");
             return;
         }
-        // TODO: Replace this local preference with an activate API when backend exposes one.
-        wx.setStorageSync("preferredModelType", "personal_model");
-        wx.setStorageSync("preferredModelPhotoId", model._id);
-        this.setData({
-            currentModelImage: model.imageUrl,
-            currentModelName: model.displayName,
-            currentModelTypeText: "我的专属模特",
-            currentAuditText: auditTextMap[model.auditStatus],
-            hasPersonalModel: true,
-            modelCards: this.data.modelCards.map((item) => (Object.assign(Object.assign({}, item), { selected: item._id === id })))
-        });
-        (0, feedback_1.showToast)("已切换模特", "success");
+        (0, feedback_1.showLoading)("切换中");
+        try {
+            await (0, request_1.request)({
+                url: `/user-photos/${model._id}/activate`,
+                method: "POST"
+            });
+            wx.setStorageSync("preferredModelType", "personal_model");
+            wx.setStorageSync("preferredModelPhotoId", model._id);
+            this.setData({
+                currentModelImage: model.imageUrl,
+                currentModelName: model.displayName,
+                currentModelTypeText: "我的专属模特",
+                currentAuditText: auditTextMap[model.auditStatus],
+                hasPersonalModel: true,
+                modelCards: this.data.modelCards.map((item) => (Object.assign(Object.assign({}, item), { selected: item._id === id })))
+            });
+            (0, feedback_1.showToast)("已切换模特", "success");
+        }
+        catch (_a) {
+            (0, feedback_1.showToast)("切换失败，请稍后重试");
+        }
+        finally {
+            (0, feedback_1.hideLoading)();
+        }
     }
 });

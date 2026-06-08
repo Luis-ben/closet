@@ -44,6 +44,22 @@
   flex-shrink: 0;
 }
 
+.cube-style-pill {
+  width: fit-content;
+  max-width: 340rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+  padding: 0 16rpx;
+  border: 1rpx solid #D2E3FC;
+  border-radius: 999rpx;
+  background: #E8F0FE;
+  color: #174EA6;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
 .cube-action {
   min-width: 132rpx;
   height: 58rpx;

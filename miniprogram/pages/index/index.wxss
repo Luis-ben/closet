@@ -10,8 +10,8 @@
   display: grid;
   gap: 24rpx;
   padding: 42rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 32rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 16rpx 42rpx rgba(31, 31, 31, 0.08);
+  box-shadow: 0 8rpx 24rpx rgba(60, 64, 67, 0.1);
 }

@@ -7,10 +7,10 @@
   align-items: center;
   gap: 22rpx;
   padding: 28rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 32rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .avatar {
@@ -38,24 +38,24 @@
 }
 
 .user-name {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 36rpx;
   font-weight: 800;
 }
 
 .user-sub {
   margin-top: 8rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
 }
 
 .plan-pill {
   flex-shrink: 0;
   padding: 10rpx 16rpx;
-  border: 1rpx solid rgba(200, 169, 106, 0.42);
+  border: 1rpx solid #D2E3FC;
   border-radius: 999rpx;
-  background: #EFE5D3;
-  color: #1F1F1F;
+  background: #E8F0FE;
+  color: #174EA6;
   font-size: 22rpx;
   font-weight: 700;
 }
@@ -66,7 +66,7 @@
   justify-content: space-between;
   gap: 24rpx;
   padding: 32rpx;
-  border-radius: 32rpx;
+  border-radius: 16rpx;
   background: #111111;
   color: #FFFFFF;
   box-shadow: 0 16rpx 42rpx rgba(17, 17, 17, 0.16);
@@ -102,10 +102,10 @@
 
 .menu-card {
   overflow: hidden;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .menu-item {
@@ -114,7 +114,7 @@
   justify-content: space-between;
   gap: 20rpx;
   padding: 28rpx;
-  border-bottom: 1rpx solid #F2ECE3;
+  border-bottom: 1rpx solid #F1F3F4;
 }
 
 .menu-item:last-child {
@@ -122,19 +122,19 @@
 }
 
 .menu-title {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 28rpx;
   font-weight: 700;
 }
 
 .menu-note {
   margin-top: 6rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
 }
 
 .menu-arrow {
-  color: #C8A96A;
+  color: #1A73E8;
   font-size: 42rpx;
   line-height: 1;
 }

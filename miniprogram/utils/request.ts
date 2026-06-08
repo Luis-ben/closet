@@ -14,17 +14,24 @@ interface RequestOptions {
   url: string;
   method?: HttpMethod;
   data?: string | WechatMiniprogram.IAnyObject | ArrayBuffer;
+  skipAuth?: boolean;
 }
 
 interface AppWithGlobalData {
   globalData: {
     apiBaseUrl: string;
     token?: string;
+    loginPromise?: Promise<void> | null;
   };
 }
 
-export function request<T>(options: RequestOptions): Promise<ApiResponse<T>> {
+export async function request<T>(options: RequestOptions): Promise<ApiResponse<T>> {
   const app = getApp<AppWithGlobalData>();
+
+  if (!options.skipAuth && app.globalData.loginPromise) {
+    await app.globalData.loginPromise;
+  }
+
   const baseUrl = app.globalData.apiBaseUrl;
   const token = app.globalData.token;
 

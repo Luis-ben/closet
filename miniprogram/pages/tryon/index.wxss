@@ -90,6 +90,18 @@
   gap: 16rpx;
 }
 
+.outfit-notice {
+  margin-bottom: 16rpx;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid #D2E3FC;
+  border-radius: 16rpx;
+  background: #E8F0FE;
+  color: #174EA6;
+  font-size: 24rpx;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .selected-slot {
   position: relative;
   height: 184rpx;

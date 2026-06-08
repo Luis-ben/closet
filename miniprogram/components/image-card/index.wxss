@@ -43,7 +43,7 @@
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
 }
 

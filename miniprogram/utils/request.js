@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.request = request;
-function request(options) {
+async function request(options) {
     const app = getApp();
+    if (!options.skipAuth && app.globalData.loginPromise) {
+        await app.globalData.loginPromise;
+    }
     const baseUrl = app.globalData.apiBaseUrl;
     const token = app.globalData.token;
     return new Promise((resolve, reject) => {

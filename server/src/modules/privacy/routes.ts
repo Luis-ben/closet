@@ -7,6 +7,58 @@ import { ok } from "../../utils/response";
 
 export async function privacyRoutes(app: FastifyInstance): Promise<void> {
   app.post(
+    "/privacy/delete-clothing-items",
+    {
+      preHandler: authenticateRequest
+    },
+    async (request) => {
+      const userId = request.user!.id;
+      const now = nowIso();
+      let deletedCount = 0;
+
+      for (const item of store.clothingItems) {
+        if (item.userId === userId && item.status !== "deleted") {
+          item.status = "deleted";
+          item.deletedAt = now;
+          item.updatedAt = now;
+          deletedCount += 1;
+        }
+      }
+
+      return ok({
+        deleted: true,
+        deletedCount
+      });
+    }
+  );
+
+  app.post(
+    "/privacy/delete-models",
+    {
+      preHandler: authenticateRequest
+    },
+    async (request) => {
+      const userId = request.user!.id;
+      const now = nowIso();
+      let deletedCount = 0;
+
+      for (const photo of store.userPhotos) {
+        if (photo.userId === userId && !photo.deletedAt) {
+          photo.deletedAt = now;
+          photo.isActiveModel = false;
+          photo.updatedAt = now;
+          deletedCount += 1;
+        }
+      }
+
+      return ok({
+        deleted: true,
+        deletedCount
+      });
+    }
+  );
+
+  app.post(
     "/privacy/delete-account",
     {
       preHandler: authenticateRequest

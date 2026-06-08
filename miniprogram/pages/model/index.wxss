@@ -2,10 +2,10 @@
   position: relative;
   height: 720rpx;
   overflow: hidden;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 32rpx;
-  background: #EFE5D3;
-  box-shadow: 0 16rpx 42rpx rgba(31, 31, 31, 0.08);
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
+  background: #EEF2F7;
+  box-shadow: 0 8rpx 24rpx rgba(60, 64, 67, 0.1);
 }
 
 .current-model-card image {
@@ -21,7 +21,7 @@
   padding: 10rpx 18rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.9);
-  color: #1F1F1F;
+  color: #202124;
   font-size: 24rpx;
   font-weight: 800;
 }
@@ -33,12 +33,12 @@
   bottom: 24rpx;
   padding: 24rpx;
   border: 1rpx solid rgba(255, 255, 255, 0.72);
-  border-radius: 28rpx;
+  border-radius: 16rpx;
   background: rgba(255, 255, 255, 0.9);
 }
 
 .model-name {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 34rpx;
   font-weight: 800;
 }
@@ -48,7 +48,7 @@
   align-items: center;
   gap: 12rpx;
   margin-top: 10rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
 }
 
@@ -56,7 +56,7 @@
   width: 8rpx;
   height: 8rpx;
   border-radius: 50%;
-  background: #C8A96A;
+  background: #1A73E8;
 }
 
 .model-actions {
@@ -69,16 +69,16 @@
   display: grid;
   gap: 14rpx;
   padding: 28rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .tip-row {
   position: relative;
   padding-left: 24rpx;
-  color: #1F1F1F;
+  color: #202124;
   font-size: 26rpx;
   line-height: 1.45;
 }
@@ -91,7 +91,7 @@
   width: 10rpx;
   height: 10rpx;
   border-radius: 50%;
-  background: #C8A96A;
+  background: #1A73E8;
 }
 
 .model-scroll {
@@ -108,22 +108,22 @@
   width: 214rpx;
   flex-shrink: 0;
   overflow: hidden;
-  border: 2rpx solid #E9E2D8;
-  border-radius: 24rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 8rpx 22rpx rgba(31, 31, 31, 0.04);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .model-mini-card.active {
-  border-color: #C8A96A;
-  box-shadow: 0 12rpx 28rpx rgba(200, 169, 106, 0.2);
+  border-color: #1A73E8;
+  box-shadow: 0 8rpx 24rpx rgba(26, 115, 232, 0.18);
 }
 
 .model-mini-card image {
   width: 100%;
   height: 260rpx;
   display: block;
-  background: #EFE5D3;
+  background: #EEF2F7;
 }
 
 .model-mini-meta {
@@ -131,14 +131,14 @@
 }
 
 .mini-name {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 24rpx;
   font-weight: 700;
 }
 
 .status {
   margin-top: 6rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 22rpx;
 }
 

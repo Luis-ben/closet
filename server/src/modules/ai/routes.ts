@@ -16,7 +16,12 @@ const adapter = createImageGenerationAdapter();
 const outfitRenderBodySchema = z.object({
   modelType: z.enum(["personal_model", "default_model"]).optional(),
   modelPhotoId: z.string().min(1).optional(),
-  clothingItemIds: z.array(z.string().min(1)).min(1).max(8),
+  clothingItemIds: z.array(z.string().min(1)).min(1).max(8).refine(
+    (ids) => new Set(ids).size === ids.length,
+    {
+      message: "衣物不能重复选择"
+    }
+  ),
   mode: z.enum(["quick", "high", "shop"]).default("quick"),
   scene: z.string().max(40).nullable().optional(),
   style: z.string().max(40).nullable().optional(),
@@ -60,8 +65,9 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
       ensureCredits(userId, 1);
 
       const now = nowIso();
+      const taskId = createId("task");
       const task: AiTaskRecord = {
-        _id: createId("task"),
+        _id: taskId,
         userId,
         modelType,
         modelPhotoId,
@@ -83,8 +89,8 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
         deletedAt: null
       };
 
-      store.aiTasks.push(task);
       deductCredits(userId, 1, task._id);
+      store.aiTasks.push(task);
 
       scheduleOutfitTaskProcessing(task._id, adapter);
 
