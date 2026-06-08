@@ -27,11 +27,18 @@ const occasionOptions = [
     { label: "旅行", value: "travel" },
     { label: "正式", value: "formal" }
 ];
+const sourceOptions = [
+    { label: "相册", value: "album" },
+    { label: "拍照", value: "camera" },
+    { label: "网图截图", value: "web_image" },
+    { label: "商品图", value: "product_image" }
+];
 Page({
     data: {
         imageUrl: "",
         imageMeta: null,
         sourceType: "album",
+        sourceOptions,
         categoryOptions,
         category: "",
         colorOptions,
@@ -45,7 +52,10 @@ Page({
         saveDisabled: true
     },
     async onChooseImage() {
-        const uploaded = await (0, upload_1.chooseMockImage)();
+        const sourceType = this.data.sourceType;
+        const uploaded = await (0, upload_1.chooseMockImage)({
+            sourceType: sourceType === "camera" ? "camera" : "album"
+        });
         if (!uploaded) {
             return;
         }
@@ -54,6 +64,12 @@ Page({
             imageMeta: uploaded.imageMeta
         });
         this.syncSaveState();
+    },
+    onSourceChange(event) {
+        const sourceType = event.detail.value;
+        this.setData({
+            sourceType
+        });
     },
     onCategoryChange(event) {
         this.setData({
@@ -87,10 +103,6 @@ Page({
         });
     },
     getApiCategory(category) {
-        // TODO: Backend category enum does not yet include outerwear/shoes_bags; keep UI labels and map safely for now.
-        if (category === "outerwear") {
-            return "top";
-        }
         if (category === "shoes_bags") {
             return "shoes";
         }

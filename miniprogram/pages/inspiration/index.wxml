@@ -1,7 +1,34 @@
 <view class="page inspiration-page">
   <view class="section page-intro">
+    <view class="eyebrow">Outfit ideas</view>
     <view class="title">穿搭灵感</view>
-    <view class="subtitle">保存你的 AI 试穿作品</view>
+    <view class="subtitle">像从相册里找灵感一样，把衣柜单品拼成可试穿组合</view>
+  </view>
+
+  <view class="section cube-card">
+    <view class="cube-copy">
+      <view>
+        <view class="module-title">{{cubeTitle}}</view>
+        <view class="caption">{{cubeDesc}}</view>
+      </view>
+      <view class="cube-actions">
+        <view class="cube-action secondary" bindtap="onShuffleCube">换一组</view>
+        <view class="cube-action primary" bindtap="onUseCube">{{cubeButtonText}}</view>
+      </view>
+    </view>
+
+    <view class="cube-board">
+      <view
+        wx:for="{{cubeSlots}}"
+        wx:key="label"
+        class="{{item.className}}"
+      >
+        <image wx:if="{{item.filled}}" mode="aspectFill" src="{{item.imageUrl}}" />
+        <view wx:else class="slot-empty">＋</view>
+        <view class="slot-label">{{item.label}}</view>
+        <view class="slot-hint">{{item.hint}}</view>
+      </view>
+    </view>
   </view>
 
   <view class="section">
@@ -44,7 +71,10 @@
         data-style="{{item.value}}"
         bindtap="onUseTemplate"
       >
-        <view class="template-title">{{item.title}}</view>
+        <view class="template-top">
+          <view class="template-title">{{item.title}}</view>
+          <view class="template-tone">{{item.tone}}</view>
+        </view>
         <view class="template-desc">{{item.description}}</view>
       </view>
     </view>

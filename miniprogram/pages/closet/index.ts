@@ -8,11 +8,26 @@ interface ClothingItem {
   category: string;
   color: string;
   useCount: number;
+  createdAt?: string;
 }
 
 interface DisplayClothingItem extends ClothingItem {
   categoryLabel: string;
   sourceLabel: string;
+  albumLabel: string;
+  isRecent: boolean;
+}
+
+interface ClosetStat {
+  label: string;
+  value: string;
+}
+
+interface SourceOption {
+  label: string;
+  value: string;
+  count: number;
+  className: string;
 }
 
 interface UserPhoto {
@@ -49,16 +64,36 @@ const sourceLabelMap: Record<string, string> = {
   product_image: "商品图"
 };
 
+const sourceBaseOptions = [
+  { label: "全部来源", value: "all" },
+  { label: "相册", value: "album" },
+  { label: "拍照", value: "camera" },
+  { label: "网图", value: "web_image" },
+  { label: "商品图", value: "product_image" }
+];
+
+const albumPreviewLimit = 4;
+
 Page({
   data: {
     categoryOptions: categoryBaseOptions,
     activeCategory: "all",
+    activeSource: "all",
+    sourceOptions: sourceBaseOptions.map((option) => ({
+      ...option,
+      count: 0,
+      className: "source-chip"
+    })) as SourceOption[],
     allItems: [] as ClothingItem[],
     items: [] as DisplayClothingItem[],
+    recentItems: [] as DisplayClothingItem[],
+    stats: [] as ClosetStat[],
+    totalCountText: "0 件衣物",
     loading: false,
     modelImage: defaultModelImage,
     modelText: "系统默认模特",
-    modelHint: "AI 将使用这个模特生成试穿图"
+    modelHint: "AI 将使用这个模特生成试穿图",
+    albumHint: "从相册、拍照或商品图中整理单品"
   },
 
   onShow() {
@@ -82,9 +117,10 @@ Page({
         allItems,
         modelImage: activeModel?.imageUrl ?? defaultModelImage,
         modelText: activeModel ? "我的专属模特" : "系统默认模特",
+        modelHint: activeModel ? "当前会优先使用你的个人模特" : "AI 将使用默认模特生成试穿图",
         loading: false
       });
-      this.syncCategoryView(this.data.activeCategory);
+      this.syncClosetView(this.data.activeCategory, this.data.activeSource);
     } catch {
       this.setData({
         loading: false
@@ -115,8 +151,30 @@ Page({
     }));
   },
 
+  buildSourceOptions(items: ClothingItem[], activeSource: string): SourceOption[] {
+    return sourceBaseOptions.map((option) => {
+      const count = this.countBySource(items, option.value);
+      const classNames = ["source-chip"];
+
+      if (option.value === activeSource) {
+        classNames.push("is-active");
+      }
+
+      return {
+        ...option,
+        label: option.value === "all" ? "全部来源" : option.label,
+        count,
+        className: classNames.join(" ")
+      };
+    });
+  },
+
   countByCategory(items: ClothingItem[], category: string) {
     return this.filterItems(items, category).length;
+  },
+
+  countBySource(items: ClothingItem[], source: string) {
+    return this.filterBySource(items, source).length;
   },
 
   filterItems(items: ClothingItem[], category: string) {
@@ -131,24 +189,81 @@ Page({
     return items.filter((item) => item.category === category);
   },
 
-  toDisplayItems(items: ClothingItem[]): DisplayClothingItem[] {
-    return items.map((item) => ({
-      ...item,
-      categoryLabel: categoryLabelMap[item.category] ?? item.category,
-      sourceLabel: sourceLabelMap[item.sourceType] ?? "图片"
-    }));
+  filterBySource(items: ClothingItem[], source: string) {
+    if (source === "all") {
+      return items;
+    }
+
+    return items.filter((item) => item.sourceType === source);
   },
 
-  syncCategoryView(activeCategory: string) {
+  sortItems(items: ClothingItem[]) {
+    return [...items].sort((a, b) => {
+      const bTime = new Date(b.createdAt ?? 0).getTime();
+      const aTime = new Date(a.createdAt ?? 0).getTime();
+
+      return bTime - aTime;
+    });
+  },
+
+  toDisplayItems(items: ClothingItem[]): DisplayClothingItem[] {
+    return items.map((item, index) => {
+      const sourceLabel = sourceLabelMap[item.sourceType] ?? "图片";
+
+      return {
+        ...item,
+        categoryLabel: categoryLabelMap[item.category] ?? item.category,
+        sourceLabel,
+        albumLabel: `${sourceLabel} · ${categoryLabelMap[item.category] ?? item.category}`,
+        isRecent: index < albumPreviewLimit
+      };
+    });
+  },
+
+  buildStats(items: ClothingItem[]): ClosetStat[] {
+    const sourceCount = this.countBySource(items, "album");
+    const outfitReadyCount = ["top", "bottom", "dress", "shoes", "bag"].reduce(
+      (total, category) => total + this.countByCategory(items, category),
+      0
+    );
+
+    return [
+      { label: "总衣物", value: `${items.length}` },
+      { label: "相册导入", value: `${sourceCount}` },
+      { label: "可试穿", value: `${outfitReadyCount}` }
+    ];
+  },
+
+  syncClosetView(activeCategory: string, activeSource: string) {
+    const sortedItems = this.sortItems(this.data.allItems);
+    const categoryFiltered = this.filterItems(sortedItems, activeCategory);
+    const visibleItems = this.filterBySource(categoryFiltered, activeSource);
+    const displayItems = this.toDisplayItems(visibleItems);
+    const recentItems = this.toDisplayItems(sortedItems.slice(0, albumPreviewLimit));
+
     this.setData({
       activeCategory,
+      activeSource,
       categoryOptions: this.buildCategoryOptions(this.data.allItems),
-      items: this.toDisplayItems(this.filterItems(this.data.allItems, activeCategory))
+      sourceOptions: this.buildSourceOptions(this.data.allItems, activeSource),
+      items: displayItems,
+      recentItems,
+      stats: this.buildStats(this.data.allItems),
+      totalCountText: `${visibleItems.length} 件衣物`,
+      albumHint: this.data.allItems.length
+        ? "像翻相册一样浏览衣物，点进单品可继续试穿"
+        : "从相册、拍照或商品图中整理单品"
     });
   },
 
   onSelectCategory(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
-    this.syncCategoryView(event.detail.value);
+    this.syncClosetView(event.detail.value, this.data.activeSource);
+  },
+
+  onSelectSource(event: WechatMiniprogram.TouchEvent) {
+    const source = event.currentTarget.dataset.source as string;
+
+    this.syncClosetView(this.data.activeCategory, source);
   },
 
   onUpload() {
@@ -160,6 +275,12 @@ Page({
   onOpenModel() {
     wx.navigateTo({
       url: "/pages/model/index"
+    });
+  },
+
+  onGoTryon() {
+    wx.switchTab({
+      url: "/pages/tryon/index"
     });
   },
 

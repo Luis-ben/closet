@@ -42,6 +42,7 @@ interface RecentTaskStorage {
 const defaultModelImage = "https://placehold.co/768x1024/png?text=Default+Model";
 const recentTaskStorageKey = "recentOutfitTasks";
 const pendingStyleStorageKey = "pendingTryonStyle";
+const pendingClothingItemIdsStorageKey = "pendingTryonClothingItemIds";
 
 const categoryOptions = [
   { label: "全部", value: "all" },
@@ -123,6 +124,20 @@ Page({
     }
   },
 
+  readPendingClothingItemIds(): string[] {
+    const pendingIds = wx.getStorageSync(pendingClothingItemIdsStorageKey) as string[] | string;
+
+    if (!pendingIds) {
+      return [];
+    }
+
+    wx.removeStorageSync(pendingClothingItemIdsStorageKey);
+
+    return Array.isArray(pendingIds)
+      ? pendingIds.filter((id) => typeof id === "string" && id)
+      : [];
+  },
+
   async loadPageData() {
     this.setData({
       loading: true
@@ -135,9 +150,13 @@ Page({
         request<{ items: UserPhoto[] }>({ url: "/user-photos" })
       ]);
       const clothingItems = clothingResponse.data?.items ?? [];
-      const selectedClothingItemIds = (this.data.selectedClothingItemIds as string[]).filter((id) =>
+      const pendingSelectedIds = this.readPendingClothingItemIds();
+      const baseSelectedIds = pendingSelectedIds.length
+        ? pendingSelectedIds
+        : (this.data.selectedClothingItemIds as string[]);
+      const selectedClothingItemIds = baseSelectedIds.filter((id: string) =>
         clothingItems.some((item) => item._id === id)
-      );
+      ).slice(0, 3);
       const modelState = this.resolveModel(photoResponse.data?.items ?? []);
 
       this.setData({
@@ -202,8 +221,8 @@ Page({
   },
 
   buildSelectedSlots(selectedItems: DisplayClothingItem[]): SelectedSlot[] {
-    return slotLabels.map((label, index) => {
-      const item = selectedItems[index];
+    return slotLabels.map((label) => {
+      const item = selectedItems.find((selectedItem) => this.getSlotLabel(selectedItem.category) === label);
 
       return {
         label,
@@ -215,16 +234,62 @@ Page({
     });
   },
 
+  getSlotLabel(category: string) {
+    if (category === "bottom" || category === "dress") {
+      return "下装";
+    }
+
+    if (category === "shoes" || category === "bag" || category === "accessory") {
+      return "鞋包";
+    }
+
+    return "上衣";
+  },
+
+  normalizeSelectedIds(selectedIds: string[]) {
+    const nextIds: string[] = [];
+    const usedSlots: string[] = [];
+
+    selectedIds.forEach((id) => {
+      const item = (this.data.clothingItems as ClothingItem[]).find((clothingItem) => clothingItem._id === id);
+
+      if (!item) {
+        return;
+      }
+
+      const slotLabel = this.getSlotLabel(item.category);
+
+      if (usedSlots.includes(slotLabel)) {
+        const replaceIndex = nextIds.findIndex((nextId) => {
+          const nextItem = (this.data.clothingItems as ClothingItem[]).find((clothingItem) => clothingItem._id === nextId);
+
+          return nextItem ? this.getSlotLabel(nextItem.category) === slotLabel : false;
+        });
+
+        if (replaceIndex >= 0) {
+          nextIds[replaceIndex] = id;
+        }
+        return;
+      }
+
+      usedSlots.push(slotLabel);
+      nextIds.push(id);
+    });
+
+    return nextIds.slice(0, 3);
+  },
+
   syncView(selectedClothingItemIds: string[], activeCategory: string) {
-    const allDisplayItems = this.toDisplayItems(this.data.clothingItems, selectedClothingItemIds);
+    const normalizedSelectedIds = this.normalizeSelectedIds(selectedClothingItemIds);
+    const allDisplayItems = this.toDisplayItems(this.data.clothingItems, normalizedSelectedIds);
     const selectedClothingItems = allDisplayItems.filter((item: DisplayClothingItem) => item.selected);
     const displayClothingItems = this.toDisplayItems(
       this.filterItems(this.data.clothingItems, activeCategory),
-      selectedClothingItemIds
+      normalizedSelectedIds
     );
 
     this.setData({
-      selectedClothingItemIds,
+      selectedClothingItemIds: normalizedSelectedIds,
       selectedClothingItems,
       selectedSlots: this.buildSelectedSlots(selectedClothingItems),
       displayClothingItems
@@ -260,16 +325,32 @@ Page({
 
   onToggleCloth(event: WechatMiniprogram.TouchEvent) {
     const id = event.currentTarget.dataset.id as string;
+    const item = (this.data.clothingItems as ClothingItem[]).find((clothingItem) => clothingItem._id === id);
+
+    if (!item) {
+      return;
+    }
+
     const alreadySelected = this.data.selectedClothingItemIds.includes(id);
 
-    if (!alreadySelected && this.data.selectedClothingItemIds.length >= 3) {
+    const selectedIdsWithoutSameSlot = (this.data.selectedClothingItemIds as string[]).filter((selectedId) => {
+      const selectedItem = (this.data.clothingItems as ClothingItem[]).find((clothingItem) => clothingItem._id === selectedId);
+
+      if (!selectedItem || alreadySelected) {
+        return true;
+      }
+
+      return this.getSlotLabel(selectedItem.category) !== this.getSlotLabel(item.category);
+    });
+
+    if (!alreadySelected && selectedIdsWithoutSameSlot.length >= 3) {
       showToast("最多选择 3 件衣物");
       return;
     }
 
     const selected = alreadySelected
       ? (this.data.selectedClothingItemIds as string[]).filter((itemId) => itemId !== id)
-      : [...this.data.selectedClothingItemIds, id];
+      : [...selectedIdsWithoutSameSlot, id].slice(0, 3);
 
     this.syncView(selected, this.data.activeCategory);
   },

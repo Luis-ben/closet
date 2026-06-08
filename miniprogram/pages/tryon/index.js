@@ -5,6 +5,7 @@ const feedback_1 = require("../../utils/feedback");
 const defaultModelImage = "https://placehold.co/768x1024/png?text=Default+Model";
 const recentTaskStorageKey = "recentOutfitTasks";
 const pendingStyleStorageKey = "pendingTryonStyle";
+const pendingClothingItemIdsStorageKey = "pendingTryonClothingItemIds";
 const categoryOptions = [
     { label: "全部", value: "all" },
     { label: "上衣", value: "top" },
@@ -76,6 +77,16 @@ Page({
             wx.removeStorageSync(pendingStyleStorageKey);
         }
     },
+    readPendingClothingItemIds() {
+        const pendingIds = wx.getStorageSync(pendingClothingItemIdsStorageKey);
+        if (!pendingIds) {
+            return [];
+        }
+        wx.removeStorageSync(pendingClothingItemIdsStorageKey);
+        return Array.isArray(pendingIds)
+            ? pendingIds.filter((id) => typeof id === "string" && id)
+            : [];
+    },
     async loadPageData() {
         var _a, _b, _c, _d, _e, _f;
         this.setData({
@@ -88,7 +99,11 @@ Page({
                 (0, request_1.request)({ url: "/user-photos" })
             ]);
             const clothingItems = (_b = (_a = clothingResponse.data) === null || _a === void 0 ? void 0 : _a.items) !== null && _b !== void 0 ? _b : [];
-            const selectedClothingItemIds = this.data.selectedClothingItemIds.filter((id) => clothingItems.some((item) => item._id === id));
+            const pendingSelectedIds = this.readPendingClothingItemIds();
+            const baseSelectedIds = pendingSelectedIds.length
+                ? pendingSelectedIds
+                : this.data.selectedClothingItemIds;
+            const selectedClothingItemIds = baseSelectedIds.filter((id) => clothingItems.some((item) => item._id === id)).slice(0, 3);
             const modelState = this.resolveModel((_d = (_c = photoResponse.data) === null || _c === void 0 ? void 0 : _c.items) !== null && _d !== void 0 ? _d : []);
             this.setData(Object.assign(Object.assign({ credits: (_f = (_e = meResponse.data) === null || _e === void 0 ? void 0 : _e.user.credits) !== null && _f !== void 0 ? _f : 0 }, modelState), { clothingItems, loading: false }));
             this.syncView(selectedClothingItemIds, this.data.activeCategory);
@@ -139,9 +154,9 @@ Page({
         });
     },
     buildSelectedSlots(selectedItems) {
-        return slotLabels.map((label, index) => {
+        return slotLabels.map((label) => {
             var _a, _b, _c;
-            const item = selectedItems[index];
+            const item = selectedItems.find((selectedItem) => this.getSlotLabel(selectedItem.category) === label);
             return {
                 label,
                 itemId: (_a = item === null || item === void 0 ? void 0 : item._id) !== null && _a !== void 0 ? _a : "",
@@ -151,12 +166,46 @@ Page({
             };
         });
     },
+    getSlotLabel(category) {
+        if (category === "bottom" || category === "dress") {
+            return "下装";
+        }
+        if (category === "shoes" || category === "bag" || category === "accessory") {
+            return "鞋包";
+        }
+        return "上衣";
+    },
+    normalizeSelectedIds(selectedIds) {
+        const nextIds = [];
+        const usedSlots = [];
+        selectedIds.forEach((id) => {
+            const item = this.data.clothingItems.find((clothingItem) => clothingItem._id === id);
+            if (!item) {
+                return;
+            }
+            const slotLabel = this.getSlotLabel(item.category);
+            if (usedSlots.includes(slotLabel)) {
+                const replaceIndex = nextIds.findIndex((nextId) => {
+                    const nextItem = this.data.clothingItems.find((clothingItem) => clothingItem._id === nextId);
+                    return nextItem ? this.getSlotLabel(nextItem.category) === slotLabel : false;
+                });
+                if (replaceIndex >= 0) {
+                    nextIds[replaceIndex] = id;
+                }
+                return;
+            }
+            usedSlots.push(slotLabel);
+            nextIds.push(id);
+        });
+        return nextIds.slice(0, 3);
+    },
     syncView(selectedClothingItemIds, activeCategory) {
-        const allDisplayItems = this.toDisplayItems(this.data.clothingItems, selectedClothingItemIds);
+        const normalizedSelectedIds = this.normalizeSelectedIds(selectedClothingItemIds);
+        const allDisplayItems = this.toDisplayItems(this.data.clothingItems, normalizedSelectedIds);
         const selectedClothingItems = allDisplayItems.filter((item) => item.selected);
-        const displayClothingItems = this.toDisplayItems(this.filterItems(this.data.clothingItems, activeCategory), selectedClothingItemIds);
+        const displayClothingItems = this.toDisplayItems(this.filterItems(this.data.clothingItems, activeCategory), normalizedSelectedIds);
         this.setData({
-            selectedClothingItemIds,
+            selectedClothingItemIds: normalizedSelectedIds,
             selectedClothingItems,
             selectedSlots: this.buildSelectedSlots(selectedClothingItems),
             displayClothingItems
@@ -188,14 +237,25 @@ Page({
     },
     onToggleCloth(event) {
         const id = event.currentTarget.dataset.id;
+        const item = this.data.clothingItems.find((clothingItem) => clothingItem._id === id);
+        if (!item) {
+            return;
+        }
         const alreadySelected = this.data.selectedClothingItemIds.includes(id);
-        if (!alreadySelected && this.data.selectedClothingItemIds.length >= 3) {
+        const selectedIdsWithoutSameSlot = this.data.selectedClothingItemIds.filter((selectedId) => {
+            const selectedItem = this.data.clothingItems.find((clothingItem) => clothingItem._id === selectedId);
+            if (!selectedItem || alreadySelected) {
+                return true;
+            }
+            return this.getSlotLabel(selectedItem.category) !== this.getSlotLabel(item.category);
+        });
+        if (!alreadySelected && selectedIdsWithoutSameSlot.length >= 3) {
             (0, feedback_1.showToast)("最多选择 3 件衣物");
             return;
         }
         const selected = alreadySelected
             ? this.data.selectedClothingItemIds.filter((itemId) => itemId !== id)
-            : [...this.data.selectedClothingItemIds, id];
+            : [...selectedIdsWithoutSameSlot, id].slice(0, 3);
         this.syncView(selected, this.data.activeCategory);
     },
     onRemoveSelected(event) {

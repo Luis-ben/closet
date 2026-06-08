@@ -9,13 +9,13 @@
   gap: 20rpx;
   align-items: center;
   padding: 22rpx 32rpx calc(22rpx + env(safe-area-inset-bottom));
-  border-top: 1rpx solid rgba(233, 226, 216, 0.86);
+  border-top: 1rpx solid rgba(232, 234, 237, 0.9);
   background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 -12rpx 34rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 -8rpx 24rpx rgba(60, 64, 67, 0.08);
 }
 
 .bottom-info {
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
   line-height: 1.35;
   white-space: nowrap;

@@ -16,10 +16,15 @@
 
   <view class="section tip-card">
     <view class="tip-title">上传提示</view>
-    <view class="tip-copy">AI 会根据衣物图片生成试穿预览，请尽量上传完整、清晰的单品照片。</view>
+    <view class="tip-copy">不会默认扫描完整相册，只会上传你这次主动选择的图片。</view>
   </view>
 
   <view class="section form-section">
+    <view class="form-block">
+      <section-header title="图片来源" subtitle="用于之后在衣柜里按来源整理" />
+      <tag-selector options="{{sourceOptions}}" value="{{sourceType}}" bindchange="onSourceChange" />
+    </view>
+
     <view class="form-block">
       <section-header title="分类" subtitle="选择最接近的衣物类型" />
       <tag-selector options="{{categoryOptions}}" value="{{category}}" bindchange="onCategoryChange" />

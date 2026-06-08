@@ -3,12 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.chooseMockImage = chooseMockImage;
 const feedback_1 = require("./feedback");
 const maxImageSizeBytes = 5 * 1024 * 1024;
-async function chooseMockImage() {
+async function chooseMockImage(options = {}) {
+    var _a;
     const authorized = await ensurePrivacyAuthorized();
     if (!authorized) {
         return null;
     }
-    const localImage = await chooseLocalImage();
+    const localImage = await chooseLocalImage((_a = options.sourceType) !== null && _a !== void 0 ? _a : "album");
     if (!localImage) {
         return null;
     }
@@ -16,7 +17,7 @@ async function chooseMockImage() {
     try {
         return await uploadImageFile(localImage.tempFilePath);
     }
-    catch (_a) {
+    catch (_b) {
         (0, feedback_1.showToast)("图片上传失败，请稍后重试");
         return null;
     }
@@ -41,12 +42,12 @@ function ensurePrivacyAuthorized() {
         });
     });
 }
-function chooseLocalImage() {
+function chooseLocalImage(sourceType) {
     return new Promise((resolve) => {
         wx.chooseMedia({
             count: 1,
             mediaType: ["image"],
-            sourceType: ["album", "camera"],
+            sourceType: [sourceType],
             success(result) {
                 const file = result.tempFiles[0];
                 if (!file) {

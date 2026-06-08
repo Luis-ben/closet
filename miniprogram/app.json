@@ -13,9 +13,9 @@
   ],
   "window": {
     "navigationBarTitleText": "AI 衣镜",
-    "navigationBarBackgroundColor": "#F7F3EE",
+    "navigationBarBackgroundColor": "#F8FAFD",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F7F3EE"
+    "backgroundColor": "#F8FAFD"
   },
   "tabBar": {
     "color": "#7A746E",

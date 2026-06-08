@@ -5,10 +5,10 @@
   align-items: center;
   justify-content: center;
   padding: 48rpx 32rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
   text-align: center;
 }
 
@@ -21,9 +21,9 @@
 
 .empty-art__card {
   position: absolute;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 18rpx;
-  background: #EFE5D3;
+  border: 1rpx solid #E8EAED;
+  border-radius: 14rpx;
+  background: #E8F0FE;
 }
 
 .card-a {
@@ -48,11 +48,11 @@
   width: 20rpx;
   height: 20rpx;
   border-radius: 50%;
-  background: #C8A96A;
+  background: #1A73E8;
 }
 
 .empty-title {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 32rpx;
   font-weight: 700;
 }
@@ -60,7 +60,7 @@
 .empty-desc {
   max-width: 470rpx;
   margin-top: 10rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
   line-height: 1.5;
 }

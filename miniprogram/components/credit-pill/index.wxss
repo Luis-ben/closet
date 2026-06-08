@@ -4,19 +4,19 @@
   align-items: center;
   gap: 10rpx;
   padding: 0 22rpx;
-  border: 1rpx solid rgba(200, 169, 106, 0.42);
+  border: 1rpx solid #D2E3FC;
   border-radius: 999rpx;
   background: #FFFFFF;
-  color: #1F1F1F;
+  color: #174EA6;
   font-size: 24rpx;
   font-weight: 700;
   white-space: nowrap;
-  box-shadow: 0 8rpx 22rpx rgba(31, 31, 31, 0.04);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.06);
 }
 
 .credit-dot {
   width: 12rpx;
   height: 12rpx;
   border-radius: 50%;
-  background: #C8A96A;
+  background: #1A73E8;
 }

@@ -28,7 +28,7 @@ const createClothingItemBodySchema = z.object({
   imageMeta: imageMetaSchema,
   sourceType: z.enum(["camera", "album", "web_image", "product_image"]),
   sourceUrl: z.string().url().max(2000).nullable().optional(),
-  category: z.enum(["top", "bottom", "dress", "shoes", "bag", "accessory"]),
+  category: z.enum(["top", "bottom", "dress", "outerwear", "shoes", "bag", "accessory"]),
   color: z.string().min(1).max(30),
   season: z.array(z.enum(["spring", "summer", "autumn", "winter", "all"])).default([]),
   occasion: z.array(z.enum(["commute", "casual", "date", "sport", "formal"])).default([]),

@@ -65,6 +65,11 @@ export async function processOutfitTask(
     task.costEstimate = result.costEstimate;
     task.completedAt = nowIso();
     task.updatedAt = task.completedAt;
+
+    clothingItems.forEach((item) => {
+      item.useCount += 1;
+      item.updatedAt = task.completedAt!;
+    });
   } catch (error) {
     task.status = "failed";
     task.errorCode = error instanceof AppError ? error.code : "AI_FAILED";

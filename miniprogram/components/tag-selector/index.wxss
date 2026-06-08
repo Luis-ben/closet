@@ -10,17 +10,17 @@
   align-items: center;
   gap: 8rpx;
   padding: 0 22rpx;
-  border: 1rpx solid #E9E2D8;
+  border: 1rpx solid #DADCE0;
   border-radius: 999rpx;
   background: #FFFFFF;
-  color: #1F1F1F;
+  color: #3C4043;
   font-size: 26rpx;
 }
 
 .tag.is-selected {
-  border-color: #111111;
-  background: #111111;
-  color: #FFFFFF;
+  border-color: #D2E3FC;
+  background: #E8F0FE;
+  color: #174EA6;
   font-weight: 700;
 }
 

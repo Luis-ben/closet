@@ -9,6 +9,10 @@ export interface MockUploadedImage {
   };
 }
 
+interface ChooseImageOptions {
+  sourceType?: "album" | "camera";
+}
+
 interface AppWithGlobalData {
   globalData: {
     apiBaseUrl: string;
@@ -23,14 +27,14 @@ interface UploadResponse {
 
 const maxImageSizeBytes = 5 * 1024 * 1024;
 
-export async function chooseMockImage(): Promise<MockUploadedImage | null> {
+export async function chooseMockImage(options: ChooseImageOptions = {}): Promise<MockUploadedImage | null> {
   const authorized = await ensurePrivacyAuthorized();
 
   if (!authorized) {
     return null;
   }
 
-  const localImage = await chooseLocalImage();
+  const localImage = await chooseLocalImage(options.sourceType ?? "album");
 
   if (!localImage) {
     return null;
@@ -73,12 +77,12 @@ function ensurePrivacyAuthorized(): Promise<boolean> {
   });
 }
 
-function chooseLocalImage(): Promise<WechatMiniprogram.MediaFile | null> {
+function chooseLocalImage(sourceType: "album" | "camera"): Promise<WechatMiniprogram.MediaFile | null> {
   return new Promise((resolve) => {
     wx.chooseMedia({
       count: 1,
       mediaType: ["image"],
-      sourceType: ["album", "camera"],
+      sourceType: [sourceType],
       success(result) {
         const file = result.tempFiles[0];
 

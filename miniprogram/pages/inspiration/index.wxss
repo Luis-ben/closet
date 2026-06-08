@@ -2,6 +2,141 @@
   padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
 }
 
+.page-intro {
+  padding-top: 6rpx;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  margin-bottom: 16rpx;
+  padding: 0 18rpx;
+  border: 1rpx solid #D2E3FC;
+  border-radius: 999rpx;
+  background: #E8F0FE;
+  color: #174EA6;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.cube-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24rpx;
+  padding: 24rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
+  background: #FFFFFF;
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
+}
+
+.cube-copy {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.cube-actions {
+  display: grid;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.cube-action {
+  min-width: 132rpx;
+  height: 58rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.cube-action.primary {
+  background: #111111;
+  color: #FFFFFF;
+}
+
+.cube-action.secondary {
+  border: 1rpx solid #DADCE0;
+  background: #FFFFFF;
+  color: #202124;
+}
+
+.cube-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 198rpx 198rpx;
+  gap: 14rpx;
+}
+
+.cube-slot {
+  position: relative;
+  overflow: hidden;
+  border: 1rpx dashed #DADCE0;
+  border-radius: 16rpx;
+  background: #F1F3F4;
+}
+
+.cube-slot.is-filled {
+  border-style: solid;
+  border-color: #E8EAED;
+}
+
+.cube-slot image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.slot-top {
+  grid-row: span 2;
+}
+
+.slot-empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9AA0A6;
+  font-size: 58rpx;
+  font-weight: 300;
+}
+
+.slot-label {
+  position: absolute;
+  left: 12rpx;
+  top: 12rpx;
+  height: 42rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+  color: #202124;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.slot-hint {
+  position: absolute;
+  left: 12rpx;
+  right: 12rpx;
+  bottom: 12rpx;
+  overflow: hidden;
+  padding: 8rpx 12rpx;
+  border-radius: 999rpx;
+  background: rgba(32, 33, 36, 0.72);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .result-scroll {
   width: 100%;
   white-space: nowrap;
@@ -21,7 +156,7 @@
   width: 256rpx;
   height: 392rpx;
   flex-shrink: 0;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
 }
 
 .template-grid {
@@ -36,26 +171,41 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  padding: 24rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  padding: 22rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
-.template-card:nth-child(2n) {
-  background: #EFE5D3;
+.template-card:nth-child(3n + 1) {
+  background: #F8FBFF;
+}
+
+.template-card:nth-child(3n + 2) {
+  background: #FBFAFF;
+}
+
+.template-top {
+  display: grid;
+  gap: 8rpx;
 }
 
 .template-title {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 30rpx;
   font-weight: 700;
 }
 
+.template-tone {
+  color: #1A73E8;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
 .template-desc {
-  margin-top: 28rpx;
-  color: #7A746E;
+  margin-top: 24rpx;
+  color: #5F6368;
   font-size: 24rpx;
   line-height: 1.45;
 }
@@ -65,11 +215,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  padding: 26rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  padding: 24rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .recommendation-copy {
@@ -86,8 +236,8 @@
   height: 98rpx;
   margin-left: -18rpx;
   border: 4rpx solid #FFFFFF;
-  border-radius: 20rpx;
-  background: #EFE5D3;
+  border-radius: 14rpx;
+  background: #EEF2F7;
 }
 
 .recommendation-images image:first-child {

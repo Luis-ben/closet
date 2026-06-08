@@ -30,11 +30,19 @@ const occasionOptions = [
   { label: "正式", value: "formal" }
 ];
 
+const sourceOptions = [
+  { label: "相册", value: "album" },
+  { label: "拍照", value: "camera" },
+  { label: "网图截图", value: "web_image" },
+  { label: "商品图", value: "product_image" }
+];
+
 Page({
   data: {
     imageUrl: "",
     imageMeta: null as MockUploadedImage["imageMeta"] | null,
     sourceType: "album",
+    sourceOptions,
     categoryOptions,
     category: "",
     colorOptions,
@@ -49,7 +57,10 @@ Page({
   },
 
   async onChooseImage() {
-    const uploaded = await chooseMockImage();
+    const sourceType = this.data.sourceType as "album" | "camera" | "web_image" | "product_image";
+    const uploaded = await chooseMockImage({
+      sourceType: sourceType === "camera" ? "camera" : "album"
+    });
 
     if (!uploaded) {
       return;
@@ -60,6 +71,14 @@ Page({
       imageMeta: uploaded.imageMeta
     });
     this.syncSaveState();
+  },
+
+  onSourceChange(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
+    const sourceType = event.detail.value;
+
+    this.setData({
+      sourceType
+    });
   },
 
   onCategoryChange(event: WechatMiniprogram.CustomEvent<{ value: string }>) {
@@ -100,11 +119,6 @@ Page({
   },
 
   getApiCategory(category: string) {
-    // TODO: Backend category enum does not yet include outerwear/shoes_bags; keep UI labels and map safely for now.
-    if (category === "outerwear") {
-      return "top";
-    }
-
     if (category === "shoes_bags") {
       return "shoes";
     }

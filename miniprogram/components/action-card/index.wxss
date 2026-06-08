@@ -5,10 +5,10 @@
   justify-content: space-between;
   box-sizing: border-box;
   padding: 26rpx;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 28rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .action-icon {
@@ -17,16 +17,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20rpx;
-  background: #EFE5D3;
-  color: #1F1F1F;
+  border-radius: 16rpx;
+  background: #E8F0FE;
+  color: #174EA6;
   font-size: 32rpx;
   font-weight: 800;
 }
 
 .action-title {
   margin-top: 22rpx;
-  color: #1F1F1F;
+  color: #202124;
   font-size: 30rpx;
   font-weight: 700;
   line-height: 1.25;
@@ -34,7 +34,7 @@
 
 .action-desc {
   margin-top: 8rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
   line-height: 1.45;
 }

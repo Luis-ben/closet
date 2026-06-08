@@ -1,12 +1,21 @@
 <view class="page closet-page">
-  <view class="section page-intro">
-    <view class="title">我的衣柜</view>
-    <view class="subtitle">管理衣物和模特，作为 AI 试穿素材</view>
+  <view class="section closet-hero">
+    <view class="hero-copy">
+      <view class="eyebrow">AI 衣物相册</view>
+      <view class="title">我的衣柜</view>
+      <view class="subtitle">{{albumHint}}</view>
+    </view>
+    <view class="hero-actions">
+      <view class="hero-button primary" bindtap="onUpload">上传</view>
+      <view class="hero-button" bindtap="onGoTryon">试穿</view>
+    </view>
   </view>
 
-  <view class="section action-grid">
-    <action-card title="上传衣服" description="添加单品到衣柜" icon="＋" url="/pages/cloth/edit" />
-    <action-card title="上传模特" description="设置你的试穿形象" icon="◎" url="/pages/model/index" />
+  <view class="section stat-strip">
+    <view wx:for="{{stats}}" wx:key="label" class="stat-item">
+      <view class="stat-value">{{item.value}}</view>
+      <view class="stat-label">{{item.label}}</view>
+    </view>
   </view>
 
   <view class="section model-card" bindtap="onOpenModel">
@@ -19,7 +28,38 @@
     <view class="model-action">更换</view>
   </view>
 
+  <view wx:if="{{recentItems.length}}" class="section recent-section">
+    <section-header title="最近导入" subtitle="来自相册、拍照和商品图" action-text="上传衣服" bindaction="onUpload" />
+    <scroll-view scroll-x class="album-scroll" enable-flex>
+      <view class="album-row">
+        <view wx:for="{{recentItems}}" wx:key="_id" class="album-thumb">
+          <image mode="aspectFill" src="{{item.imageUrl}}" />
+          <view class="album-source">{{item.sourceLabel}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="section source-section">
+    <section-header title="来源" subtitle="按图片来源快速收拢衣物" />
+    <scroll-view scroll-x class="source-scroll" enable-flex>
+      <view class="source-row">
+        <view
+          wx:for="{{sourceOptions}}"
+          wx:key="value"
+          class="{{item.className}}"
+          data-source="{{item.value}}"
+          bindtap="onSelectSource"
+        >
+          <text>{{item.label}}</text>
+          <text class="source-count">{{item.count}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <view class="section category-section">
+    <section-header title="衣物相册" subtitle="{{totalCountText}}" />
     <tag-selector options="{{categoryOptions}}" value="{{activeCategory}}" bindchange="onSelectCategory" />
   </view>
 
@@ -36,13 +76,13 @@
         image-url="{{item.imageUrl}}"
         badge="{{item.categoryLabel}}"
         title="{{item.color}}"
-        subtitle="使用 {{item.useCount}} 次"
+        subtitle="{{item.categoryLabel}} · 使用 {{item.useCount}} 次"
         placeholder="衣物图片"
         show-delete="{{true}}"
         data-id="{{item._id}}"
         binddelete="onDeleteCloth"
       />
-      <view class="cloth-source">{{item.sourceLabel}}</view>
+      <view class="cloth-source">{{item.albumLabel}}</view>
     </view>
   </view>
 
@@ -53,4 +93,6 @@
     button-text="上传衣服"
     bindaction="onUpload"
   />
+
+  <view class="floating-upload" bindtap="onUpload">＋</view>
 </view>

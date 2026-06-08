@@ -14,10 +14,10 @@
   position: relative;
   height: 650rpx;
   overflow: hidden;
-  border: 1rpx solid #E9E2D8;
-  border-radius: 32rpx;
-  background: #EFE5D3;
-  box-shadow: 0 16rpx 42rpx rgba(31, 31, 31, 0.08);
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
+  background: #EEF2F7;
+  box-shadow: 0 8rpx 24rpx rgba(60, 64, 67, 0.1);
 }
 
 .tryon-canvas image {
@@ -45,7 +45,7 @@
   padding: 0 20rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.9);
-  color: #1F1F1F;
+  color: #202124;
   font-size: 24rpx;
   font-weight: 700;
 }
@@ -94,16 +94,16 @@
   position: relative;
   height: 184rpx;
   overflow: hidden;
-  border: 2rpx dashed #D8CCBA;
-  border-radius: 24rpx;
+  border: 2rpx dashed #DADCE0;
+  border-radius: 16rpx;
   background: rgba(255, 255, 255, 0.72);
 }
 
 .selected-slot.is-filled {
   border-style: solid;
-  border-color: #C8A96A;
+  border-color: #1A73E8;
   background: #FFFFFF;
-  box-shadow: 0 10rpx 24rpx rgba(200, 169, 106, 0.18);
+  box-shadow: 0 8rpx 24rpx rgba(26, 115, 232, 0.16);
 }
 
 .selected-slot image {
@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 26rpx;
   font-weight: 700;
 }
@@ -143,7 +143,7 @@
   padding: 6rpx 12rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.88);
-  color: #1F1F1F;
+  color: #202124;
   font-size: 22rpx;
   font-weight: 700;
 }
@@ -172,7 +172,7 @@
   width: 232rpx;
   height: 390rpx;
   flex-shrink: 0;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
 }
 
 .style-section {

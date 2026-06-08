@@ -1,14 +1,14 @@
 .image-card-comp {
   overflow: hidden;
-  border: 2rpx solid #E9E2D8;
-  border-radius: 24rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
   background: #FFFFFF;
-  box-shadow: 0 12rpx 36rpx rgba(31, 31, 31, 0.06);
+  box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
 }
 
 .image-card-comp.is-selected {
-  border-color: #C8A96A;
-  box-shadow: 0 14rpx 36rpx rgba(200, 169, 106, 0.22);
+  border-color: #1A73E8;
+  box-shadow: 0 8rpx 24rpx rgba(26, 115, 232, 0.2);
 }
 
 .image-wrap {
@@ -16,8 +16,8 @@
   width: 100%;
   height: 280rpx;
   overflow: hidden;
-  border-radius: 22rpx 22rpx 0 0;
-  background: #EFE5D3;
+  border-radius: 16rpx 16rpx 0 0;
+  background: #EEF2F7;
 }
 
 .image-wrap image,
@@ -50,8 +50,8 @@
 .placeholder-mark {
   width: 52rpx;
   height: 52rpx;
-  border: 2rpx solid #D8CCBA;
-  border-radius: 16rpx;
+  border: 2rpx solid #DADCE0;
+  border-radius: 12rpx;
   background: rgba(255, 255, 255, 0.48);
 }
 
@@ -62,7 +62,7 @@
   padding: 8rpx 14rpx;
   border-radius: 999rpx;
   background: rgba(255, 255, 255, 0.9);
-  color: #1F1F1F;
+  color: #202124;
   font-size: 22rpx;
   font-weight: 700;
 }
@@ -74,7 +74,7 @@
   width: 42rpx;
   height: 42rpx;
   border-radius: 50%;
-  background: #C8A96A;
+  background: #1A73E8;
   color: #FFFFFF;
   font-size: 26rpx;
   line-height: 42rpx;
@@ -100,13 +100,13 @@
 }
 
 .meta-title {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 26rpx;
   font-weight: 700;
 }
 
 .meta-subtitle {
   margin-top: 6rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 22rpx;
 }

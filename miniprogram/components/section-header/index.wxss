@@ -11,7 +11,7 @@
 }
 
 .section-title {
-  color: #1F1F1F;
+  color: #202124;
   font-size: 32rpx;
   font-weight: 600;
   line-height: 1.25;
@@ -19,14 +19,14 @@
 
 .section-subtitle {
   margin-top: 8rpx;
-  color: #7A746E;
+  color: #5F6368;
   font-size: 24rpx;
   line-height: 1.45;
 }
 
 .section-action {
   flex-shrink: 0;
-  color: #C8A96A;
+  color: #1A73E8;
   font-size: 24rpx;
   font-weight: 700;
 }
