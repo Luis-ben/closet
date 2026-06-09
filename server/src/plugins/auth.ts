@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { AppError } from "../utils/errors";
-import { store } from "../store";
 import { verifyDevMockToken, verifySessionToken } from "../modules/auth/token";
+import { getUserRepository } from "../store/userRepository";
 
 export async function authPlugin(app: FastifyInstance): Promise<void> {
   app.decorate("authenticate", authenticateRequest);
@@ -24,7 +24,7 @@ export async function authenticateRequest(
     throw new AppError(401, "AUTH_INVALID", "登录态无效");
   }
 
-  const user = store.users.find((item) => item._id === session.userId && !item.deletedAt);
+  const user = await getUserRepository().findActiveById(session.userId);
 
   if (!user) {
     throw new AppError(401, "AUTH_INVALID", "登录态无效");

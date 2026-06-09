@@ -21,6 +21,10 @@ export async function getMongoDb(): Promise<Db> {
   return client.db(getDatabaseName());
 }
 
+export function getMongoClient(): MongoClient | null {
+  return client;
+}
+
 export async function ensureMongoIndexes(): Promise<void> {
   const db = await getMongoDb();
 

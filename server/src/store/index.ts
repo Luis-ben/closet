@@ -18,10 +18,6 @@ export function assertDataStoreReady(): void {
   if (process.env.NODE_ENV === "production" && provider === "memory") {
     throw new Error("生产环境不能使用内存 data store，请配置 DATA_STORE_PROVIDER=mongodb");
   }
-
-  if (provider === "mongodb") {
-    throw new Error("DATA_STORE_PROVIDER=mongodb 已声明，但 MongoDB data store 尚未实现");
-  }
 }
 
 export const dataStore = memoryStore;
