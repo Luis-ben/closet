@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { authenticateRequest } from "../../plugins/auth";
-import { store } from "../../store";
+import { getCreditRepository } from "../../store/creditRepository";
 import { ok } from "../../utils/response";
 
 export async function creditRoutes(app: FastifyInstance): Promise<void> {
@@ -11,7 +11,7 @@ export async function creditRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request) => {
       const userId = request.user!.id;
-      const logs = store.creditLogs.filter((item) => item.userId === userId);
+      const logs = await getCreditRepository().listLogs(userId);
 
       return ok({
         items: logs

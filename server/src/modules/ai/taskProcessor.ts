@@ -80,7 +80,7 @@ export async function processOutfitTask(
     task.errorMessage = error instanceof Error ? error.message : "AI 生成失败";
     task.completedAt = nowIso();
     task.updatedAt = task.completedAt;
-    refundCredits(task.userId, 1, task._id);
+    await refundCredits(task.userId, 1, task._id);
   }
 }
 

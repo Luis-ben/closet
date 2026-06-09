@@ -62,7 +62,7 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
       const modelType: ModelType = body.modelType ?? (activeModel ? "personal_model" : "default_model");
       const modelPhotoId = resolveModelPhotoId(userId, modelType, body.modelPhotoId, activeModel?._id);
 
-      ensureCredits(userId, 1);
+      await ensureCredits(userId, 1);
 
       const now = nowIso();
       const taskId = createId("task");
@@ -89,7 +89,7 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
         deletedAt: null
       };
 
-      deductCredits(userId, 1, task._id);
+      await deductCredits(userId, 1, task._id);
       store.aiTasks.push(task);
 
       scheduleOutfitTaskProcessing(task._id, adapter);
