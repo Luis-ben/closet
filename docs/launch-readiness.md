@@ -45,6 +45,7 @@
 - 衣物和模特创建已统一图片输入校验；生产环境禁止 `mock://`、`wxfile://` 和任意外部 HTTP 图片，必须使用对象存储或本服务上传目录图片，并提交 `imageMeta`。
 - 后端业务模块已从直接依赖 `mockStore` 收口到统一 `store/index.ts` 数据入口，为替换真实数据库做准备。
 - 后端生产启动已增加 data store provider 检查，避免配置了 `DATABASE_URL` 但实际仍跑内存数据层。
+- 已加入 MongoDB 驱动、连接管理和核心集合索引初始化；业务读写迁移到 MongoDB 仓储层仍需继续实现。
 - 隐私页删除衣物/模特不再是占位提示，已接真实后端接口。
 - 模特选择从本地 TODO 改为 `/user-photos/:id/activate` 后端激活接口。
 - 隐私删除成功后会清理本地模特偏好、待试穿衣物、最近任务等缓存；注销账号后会清理本地 token。
@@ -66,6 +67,7 @@
 2. 生产后端
    - 替换内存 store 为数据库，并配置 `DATA_STORE_PROVIDER` 指向真实实现。
    - 为 `userId`、`ai_tasks.status`、关键时间字段建立索引。
+   - 将 users、clothing_items、user_photos、ai_tasks、credit_logs 的业务读写从内存 store 迁移到 MongoDB/PostgreSQL 仓储层。
    - 配置真实微信登录 `code2Session` 所需的 AppID/Secret，并在微信后台绑定合法域名。
    - 配置生产环境变量：`WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`、`DATABASE_URL`、`DATA_STORE_PROVIDER`、`PUBLIC_BASE_URL`、`IMAGE_GENERATION_PROVIDER`。
    - 接入 COS 或微信云存储，避免使用本地 uploads 作为生产图片库。

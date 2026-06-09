@@ -5,6 +5,8 @@ import { authPlugin } from "./plugins/auth";
 import { routes } from "./routes";
 import { ok } from "./utils/response";
 import { uploadStaticRoutes } from "./modules/uploads/staticRoutes";
+import { closeMongoConnection, ensureMongoIndexes } from "./store/mongo";
+import { getDataStoreProvider } from "./store";
 
 export async function buildApp() {
   const app = Fastify({
@@ -19,6 +21,14 @@ export async function buildApp() {
 
   await errorHandlerPlugin(app);
   await authPlugin(app);
+
+  if (getDataStoreProvider() === "mongodb") {
+    await ensureMongoIndexes();
+  }
+
+  app.addHook("onClose", async () => {
+    await closeMongoConnection();
+  });
 
   app.get("/health", async () => ok({ status: "ok" }));
   await uploadStaticRoutes(app);
