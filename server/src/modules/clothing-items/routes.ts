@@ -3,29 +3,15 @@ import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
 import { store } from "../../store/mockStore";
 import type { ClothingItemRecord } from "../../store/types";
+import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../uploads/imageInput";
 import { AppError } from "../../utils/errors";
 import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
-import { allowedImageMimeTypes, maxImageSizeBytes, parseWithSchema } from "../../utils/validation";
-
-const imageMetaSchema = z
-  .object({
-    sizeBytes: z.number().int().positive().max(maxImageSizeBytes),
-    mimeType: z.enum(allowedImageMimeTypes)
-  })
-  .optional();
-
-const imageUrlSchema = z
-  .string()
-  .min(1)
-  .max(2000)
-  .refine((value) => /^(https?:\/\/|cloud:\/\/|wxfile:\/\/|mock:\/\/)/.test(value), {
-    message: "图片地址必须是 http、cloud、wxfile 或 mock 协议"
-  });
+import { parseWithSchema } from "../../utils/validation";
 
 const createClothingItemBodySchema = z.object({
   imageUrl: imageUrlSchema,
-  imageMeta: imageMetaSchema,
+  imageMeta: imageMetaSchema.optional(),
   sourceType: z.enum(["camera", "album", "web_image", "product_image"]),
   sourceUrl: z.string().url().max(2000).nullable().optional(),
   category: z.enum(["top", "bottom", "dress", "outerwear", "shoes", "bag", "accessory"]),
@@ -47,6 +33,7 @@ export async function clothingItemRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request) => {
       const body = parseWithSchema(createClothingItemBodySchema, request.body);
+      requireProductionImageMeta(body.imageMeta);
       const now = nowIso();
       const item: ClothingItemRecord = {
         _id: createId("cloth"),

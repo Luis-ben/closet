@@ -3,27 +3,15 @@ import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
 import { store } from "../../store/mockStore";
 import type { UserPhotoRecord } from "../../store/types";
+import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../uploads/imageInput";
 import { AppError } from "../../utils/errors";
 import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
-import { allowedImageMimeTypes, maxImageSizeBytes, parseWithSchema } from "../../utils/validation";
-
-const imageMetaSchema = z
-  .object({
-    sizeBytes: z.number().int().positive().max(maxImageSizeBytes),
-    mimeType: z.enum(allowedImageMimeTypes)
-  })
-  .optional();
+import { parseWithSchema } from "../../utils/validation";
 
 const createUserPhotoBodySchema = z.object({
-  imageUrl: z
-    .string()
-    .min(1)
-    .max(2000)
-    .refine((value) => /^(https?:\/\/|cloud:\/\/|wxfile:\/\/|mock:\/\/)/.test(value), {
-      message: "图片地址必须是 http、cloud、wxfile 或 mock 协议"
-    }),
-  imageMeta: imageMetaSchema,
+  imageUrl: imageUrlSchema,
+  imageMeta: imageMetaSchema.optional(),
   displayName: z.string().min(1).max(40).default("我的模特")
 });
 
@@ -39,6 +27,7 @@ export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request) => {
       const body = parseWithSchema(createUserPhotoBodySchema, request.body);
+      requireProductionImageMeta(body.imageMeta);
       const now = nowIso();
 
       for (const photo of store.userPhotos) {
