@@ -96,4 +96,5 @@
 
 - `miniprogram`: `npx tsc -p tsconfig.json`
 - `server`: `npm run build`
+- `server`: `npm run check:production` 可一次性检查生产环境变量缺口。
 - 页面预览截图：`output/playwright/ui-preview.png`
