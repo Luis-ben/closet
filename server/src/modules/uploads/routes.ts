@@ -8,7 +8,7 @@ import { authenticateRequest } from "../../plugins/auth";
 import { AppError } from "../../utils/errors";
 import { ok } from "../../utils/response";
 import { allowedImageMimeTypes, maxImageSizeBytes } from "../../utils/validation";
-import { getPublicBaseUrl, getUploadDir } from "./config";
+import { getImageStorageProvider, getPublicBaseUrl, getUploadDir } from "./config";
 
 const mimeToExtension: Record<string, string> = {
   "image/jpeg": ".jpg",
@@ -30,6 +30,10 @@ export async function uploadRoutes(app: FastifyInstance): Promise<void> {
       preHandler: authenticateRequest
     },
     async (request) => {
+      if (process.env.NODE_ENV === "production" && getImageStorageProvider() !== "local") {
+        throw new AppError(501, "UPLOAD_STORAGE_NOT_IMPLEMENTED", "生产环境请通过对象存储上传图片");
+      }
+
       const file = await request.file();
 
       if (!file) {

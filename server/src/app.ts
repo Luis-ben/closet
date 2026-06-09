@@ -7,6 +7,8 @@ import { ok } from "./utils/response";
 import { uploadStaticRoutes } from "./modules/uploads/staticRoutes";
 import { closeMongoConnection, ensureMongoIndexes } from "./store/mongo";
 import { getDataStoreProvider } from "./store";
+import { createImageGenerationAdapter } from "./modules/ai/adapterFactory";
+import { getAiTaskQueue } from "./modules/ai/taskQueue";
 
 export async function buildApp() {
   const app = Fastify({
@@ -25,6 +27,8 @@ export async function buildApp() {
   if (getDataStoreProvider() === "mongodb") {
     await ensureMongoIndexes();
   }
+
+  getAiTaskQueue().startWorker(app, createImageGenerationAdapter());
 
   app.addHook("onClose", async () => {
     await closeMongoConnection();

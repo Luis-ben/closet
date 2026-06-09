@@ -15,7 +15,7 @@ import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
 import { deductCredits, ensureCredits, refundCredits } from "../credits/service";
 import { createImageGenerationAdapter } from "./adapterFactory";
-import { scheduleOutfitTaskProcessing } from "./taskProcessor";
+import { getAiTaskQueue } from "./taskQueue";
 
 const adapter = createImageGenerationAdapter();
 
@@ -79,7 +79,7 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
         shareable: body.shareable
       });
 
-      scheduleOutfitTaskProcessing(task._id, adapter);
+      await getAiTaskQueue().enqueue(task._id, adapter);
 
       return reply.code(202).send(
         ok({

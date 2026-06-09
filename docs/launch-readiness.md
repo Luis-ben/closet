@@ -11,7 +11,7 @@
 - 小程序请求域名仍是本地 `http://localhost:3000/api`，提交审核前必须替换成已备案并配置在微信公众平台的 HTTPS 合法域名。
 - 后端当前开发默认使用内存 data store，服务重启会丢数据；生产启动会拒绝内存 data store，正式上线必须配置并启用 MongoDB。
 - 登录接口已具备微信 `code2Session` 和签名 token 代码路径；正式上线仍必须配置真实 `WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`，并接入数据库保存真实用户数据。
-- AI 生成适配器可通过统一 adapter 接入，但正式模型、COS/云存储、内容安全审核、费用监控仍需生产配置。
+- AI 生成适配器可通过统一 adapter 接入；生产环境已要求非内存队列和对象存储配置，但正式模型、内容安全审核、费用监控仍需真实联调。
 
 ## 已完成
 
@@ -48,6 +48,8 @@
 - 已加入 MongoDB 驱动、连接管理和核心集合索引初始化；登录、用户查询、衣物、模特、AI 任务、额度扣减/返还和 credit_logs 查询已接入仓储层。
 - 生成链路已改为仓储读写：创建任务前校验用户自己的衣物/模特，任务异步状态更新、失败返还额度、成功递增衣物使用次数均走统一数据层。
 - 隐私删除已改为通过仓储软删除衣物和模特；注销账号会软删除用户并清理关联衣物/模特。
+- AI 任务调度已抽象为队列：开发环境可用内存队列，生产环境禁止内存队列，可通过数据库持久队列轮询 `queued` 任务。
+- 图片存储已抽象为 `IMAGE_STORAGE_PROVIDER`：生产环境禁止本地图片存储，支持按 COS 公网前缀或微信云存储 `cloud://` 校验图片来源。
 - 隐私页删除衣物/模特不再是占位提示，已接真实后端接口。
 - 模特选择从本地 TODO 改为 `/user-photos/:id/activate` 后端激活接口。
 - 隐私删除成功后会清理本地模特偏好、待试穿衣物、最近任务等缓存；注销账号后会清理本地 token。
@@ -70,9 +72,9 @@
    - 生产环境配置 `DATA_STORE_PROVIDER=mongodb`，并连接真实 MongoDB。
    - 为 `userId`、`ai_tasks.status`、关键时间字段建立索引。
    - 配置真实微信登录 `code2Session` 所需的 AppID/Secret，并在微信后台绑定合法域名。
-   - 配置生产环境变量：`WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`、`DATABASE_URL`、`DATA_STORE_PROVIDER`、`PUBLIC_BASE_URL`、`IMAGE_GENERATION_PROVIDER`。
-   - 接入 COS 或微信云存储，避免使用本地 uploads 作为生产图片库。
-   - 为 AI task queue 接入真实队列，避免依赖进程内 setTimeout。
+   - 配置生产环境变量：`WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`、`DATABASE_URL`、`DATA_STORE_PROVIDER`、`PUBLIC_BASE_URL`、`IMAGE_GENERATION_PROVIDER`、`IMAGE_STORAGE_PROVIDER`、`AI_TASK_QUEUE_PROVIDER`。
+   - 接入 COS 或微信云存储真实上传流程，避免使用本地 uploads 作为生产图片库。
+   - 将 AI task queue 切换为 `database` 或外部队列，并完成多实例/重试策略压测。
 
 3. AI 与安全
    - 生产模型只通过 `ImageGenerationAdapter` 接入。

@@ -33,6 +33,7 @@ export interface AiTaskRepository {
   create(input: CreateAiTaskInput): Promise<AiTaskRecord>;
   findActiveByUser(taskId: string, userId: string): Promise<AiTaskRecord | null>;
   findById(taskId: string): Promise<AiTaskRecord | null>;
+  findNextQueued(): Promise<AiTaskRecord | null>;
   markRunning(taskId: string, updatedAt: string): Promise<AiTaskRecord | null>;
   markSuccess(input: CompleteTaskInput): Promise<void>;
   markFailed(input: FailTaskInput): Promise<void>;
@@ -82,6 +83,14 @@ class MemoryAiTaskRepository implements AiTaskRepository {
 
   async findById(taskId: string): Promise<AiTaskRecord | null> {
     return store.aiTasks.find((item) => item._id === taskId && !item.deletedAt) ?? null;
+  }
+
+  async findNextQueued(): Promise<AiTaskRecord | null> {
+    const queuedTasks = store.aiTasks
+      .filter((item) => item.status === "queued" && !item.deletedAt)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+
+    return queuedTasks[0] ?? null;
   }
 
   async markRunning(taskId: string, updatedAt: string): Promise<AiTaskRecord | null> {
@@ -155,6 +164,22 @@ class MongoAiTaskRepository implements AiTaskRepository {
       _id: taskId,
       deletedAt: null
     });
+  }
+
+  async findNextQueued(): Promise<AiTaskRecord | null> {
+    const db = await getMongoDb();
+
+    return db.collection<AiTaskRecord>("ai_tasks").findOne(
+      {
+        status: "queued",
+        deletedAt: null
+      },
+      {
+        sort: {
+          createdAt: 1
+        }
+      }
+    );
   }
 
   async markRunning(taskId: string, updatedAt: string): Promise<AiTaskRecord | null> {

@@ -19,15 +19,6 @@ function wait(ms: number): Promise<void> {
   });
 }
 
-export function scheduleOutfitTaskProcessing(
-  taskId: string,
-  adapter: ImageGenerationAdapter
-): void {
-  setTimeout(() => {
-    void processOutfitTask(taskId, adapter);
-  }, 0);
-}
-
 export async function processOutfitTask(
   taskId: string,
   adapter: ImageGenerationAdapter

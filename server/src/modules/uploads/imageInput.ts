@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getPublicBaseUrl } from "./config";
+import { getCosPublicBaseUrl, getImageStorageProvider, getPublicBaseUrl } from "./config";
 import { AppError } from "../../utils/errors";
 import { allowedImageMimeTypes, maxImageSizeBytes } from "../../utils/validation";
 
@@ -15,13 +15,19 @@ function isDevelopmentOnlyImageUrl(value: string): boolean {
 }
 
 function isAllowedProductionImageUrl(value: string): boolean {
-  if (value.startsWith("cloud://")) {
-    return true;
+  const storageProvider = getImageStorageProvider();
+
+  if (storageProvider === "wechat-cloud") {
+    return value.startsWith("cloud://");
   }
 
-  const publicBaseUrl = getPublicBaseUrl();
+  if (storageProvider === "cos") {
+    const cosPublicBaseUrl = getCosPublicBaseUrl();
 
-  return value.startsWith(`${publicBaseUrl}/uploads/`);
+    return Boolean(cosPublicBaseUrl) && value.startsWith(`${cosPublicBaseUrl}/`);
+  }
+
+  return value.startsWith(`${getPublicBaseUrl()}/uploads/`);
 }
 
 export const imageUrlSchema = z
