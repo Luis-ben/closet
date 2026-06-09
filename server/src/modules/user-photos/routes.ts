@@ -5,6 +5,7 @@ import { getUserPhotoRepository } from "../../store/userPhotoRepository";
 import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../uploads/imageInput";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
+import { checkModelInputSafety } from "../contentSafety/service";
 
 const createUserPhotoBodySchema = z.object({
   imageUrl: imageUrlSchema,
@@ -25,6 +26,11 @@ export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
     async (request) => {
       const body = parseWithSchema(createUserPhotoBodySchema, request.body);
       requireProductionImageMeta(body.imageMeta);
+      await checkModelInputSafety({
+        userId: request.user!.id,
+        imageUrl: body.imageUrl,
+        displayName: body.displayName
+      });
       const photo = await getUserPhotoRepository().createPersonalModel({
         userId: request.user!.id,
         imageUrl: body.imageUrl,

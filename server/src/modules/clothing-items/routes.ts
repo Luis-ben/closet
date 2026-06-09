@@ -6,6 +6,7 @@ import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../
 import { AppError } from "../../utils/errors";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
+import { checkClothingInputSafety } from "../contentSafety/service";
 
 const createClothingItemBodySchema = z.object({
   imageUrl: imageUrlSchema,
@@ -32,6 +33,11 @@ export async function clothingItemRoutes(app: FastifyInstance): Promise<void> {
     async (request) => {
       const body = parseWithSchema(createClothingItemBodySchema, request.body);
       requireProductionImageMeta(body.imageMeta);
+      await checkClothingInputSafety({
+        userId: request.user!.id,
+        imageUrl: body.imageUrl,
+        note: body.note
+      });
       const item = await getClothingRepository().create({
         userId: request.user!.id,
         imageUrl: body.imageUrl,

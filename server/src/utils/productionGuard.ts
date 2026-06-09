@@ -1,5 +1,6 @@
 import { assertDataStoreReady } from "../store";
 import { assertAiTaskQueueReady } from "../modules/ai/taskQueue";
+import { assertContentSafetyReady } from "../modules/contentSafety/adapter";
 import { getCosPublicBaseUrl, getImageStorageProvider } from "../modules/uploads/config";
 
 export function assertProductionReady(): void {
@@ -41,6 +42,7 @@ export function assertProductionReady(): void {
 
   assertDataStoreReady();
   assertAiTaskQueueReady();
+  assertContentSafetyReady();
 
   if (!wechatAppId || !wechatAppSecret) {
     throw new Error("生产环境必须配置 WECHAT_APP_ID 和 WECHAT_APP_SECRET");

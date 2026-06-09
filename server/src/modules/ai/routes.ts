@@ -13,6 +13,7 @@ import { AppError } from "../../utils/errors";
 import { createId } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
+import { checkTryOnInputSafety } from "../contentSafety/service";
 import { deductCredits, ensureCredits, refundCredits } from "../credits/service";
 import { createImageGenerationAdapter } from "./adapterFactory";
 import { getAiTaskQueue } from "./taskQueue";
@@ -47,6 +48,11 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
     async (request, reply) => {
       const body = parseWithSchema(outfitRenderBodySchema, request.body);
       const userId = request.user!.id;
+      await checkTryOnInputSafety({
+        userId,
+        scene: body.scene ?? null,
+        style: body.style ?? null
+      });
       const clothingItems = await getClothingRepository().findManyActiveByUser(
         body.clothingItemIds,
         userId
