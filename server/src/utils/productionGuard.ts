@@ -1,7 +1,13 @@
 import { assertDataStoreReady } from "../store";
 import { assertAiTaskQueueReady } from "../modules/ai/taskQueue";
 import { assertContentSafetyReady } from "../modules/contentSafety/adapter";
-import { getCosPublicBaseUrl, getImageStorageProvider } from "../modules/uploads/config";
+import {
+  getCosPublicBaseUrl,
+  getCosUploadAuthorization,
+  getCosUploadUrl,
+  getImageStorageProvider,
+  getWechatCloudEnv
+} from "../modules/uploads/config";
 
 export function assertProductionReady(): void {
   if (process.env.NODE_ENV !== "production") {
@@ -34,6 +40,14 @@ export function assertProductionReady(): void {
 
   if (imageStorageProvider === "cos" && !getCosPublicBaseUrl()) {
     throw new Error("生产环境使用 COS 图片存储时必须配置 COS_PUBLIC_BASE_URL");
+  }
+
+  if (imageStorageProvider === "cos" && (!getCosUploadUrl() || !getCosUploadAuthorization())) {
+    throw new Error("生产环境使用 COS 图片存储时必须配置 COS_UPLOAD_URL 和 COS_UPLOAD_AUTHORIZATION");
+  }
+
+  if (imageStorageProvider === "wechat-cloud" && !getWechatCloudEnv()) {
+    throw new Error("生产环境使用微信云存储时必须配置 WECHAT_CLOUD_ENV");
   }
 
   if (!databaseUrl) {

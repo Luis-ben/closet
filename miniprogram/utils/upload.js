@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chooseMockImage = chooseMockImage;
 const feedback_1 = require("./feedback");
+const request_1 = require("./request");
 const maxImageSizeBytes = 5 * 1024 * 1024;
 async function chooseMockImage(options = {}) {
     var _a;
@@ -15,7 +16,7 @@ async function chooseMockImage(options = {}) {
     }
     (0, feedback_1.showLoading)("上传中");
     try {
-        return await uploadImageFile(localImage.tempFilePath);
+        return await uploadImageFile(localImage);
     }
     catch (_b) {
         (0, feedback_1.showToast)("图片上传失败，请稍后重试");
@@ -67,7 +68,30 @@ function chooseLocalImage(sourceType) {
         });
     });
 }
-function uploadImageFile(filePath) {
+async function uploadImageFile(file) {
+    const mimeType = getMimeType(file.tempFilePath);
+    const tokenResponse = await (0, request_1.request)({
+        url: "/uploads/image-token",
+        method: "POST",
+        data: {
+            fileName: file.tempFilePath.split("/").pop() || "image.png",
+            mimeType,
+            sizeBytes: file.size
+        }
+    });
+    const uploadToken = tokenResponse.data;
+    if (!uploadToken) {
+        throw new Error("上传凭证获取失败");
+    }
+    if (uploadToken.provider === "wechat-cloud") {
+        return uploadToWechatCloud(file.tempFilePath, uploadToken);
+    }
+    if (uploadToken.provider === "cos") {
+        return uploadToCos(file.tempFilePath, uploadToken);
+    }
+    return uploadToLocalServer(file.tempFilePath);
+}
+function uploadToLocalServer(filePath) {
     const app = getApp();
     const token = app.globalData.token;
     return new Promise((resolve, reject) => {
@@ -96,4 +120,66 @@ function uploadImageFile(filePath) {
             }
         });
     });
+}
+function uploadToCos(filePath, uploadToken) {
+    const uploadUrl = uploadToken.uploadUrl;
+    const imageUrl = uploadToken.imageUrl;
+    if (!uploadUrl || !imageUrl) {
+        return Promise.reject(new Error("COS 上传凭证不完整"));
+    }
+    return new Promise((resolve, reject) => {
+        var _a, _b;
+        wx.uploadFile({
+            url: uploadUrl,
+            filePath,
+            name: "file",
+            header: (_a = uploadToken.headers) !== null && _a !== void 0 ? _a : {},
+            formData: Object.assign({ key: uploadToken.objectKey }, ((_b = uploadToken.formData) !== null && _b !== void 0 ? _b : {})),
+            success(result) {
+                if (result.statusCode >= 200 && result.statusCode < 300) {
+                    resolve({
+                        imageUrl,
+                        imageMeta: uploadToken.imageMeta
+                    });
+                    return;
+                }
+                reject(new Error("COS 上传失败"));
+            },
+            fail(error) {
+                reject(error);
+            }
+        });
+    });
+}
+function uploadToWechatCloud(filePath, uploadToken) {
+    const cloudPath = uploadToken.cloudPath;
+    const imageUrl = uploadToken.imageUrl;
+    if (!cloudPath || !imageUrl) {
+        return Promise.reject(new Error("微信云上传凭证不完整"));
+    }
+    return new Promise((resolve, reject) => {
+        wx.cloud.uploadFile({
+            cloudPath,
+            filePath,
+            success() {
+                resolve({
+                    imageUrl,
+                    imageMeta: uploadToken.imageMeta
+                });
+            },
+            fail(error) {
+                reject(error);
+            }
+        });
+    });
+}
+function getMimeType(filePath) {
+    const lowerPath = filePath.toLowerCase();
+    if (lowerPath.endsWith(".jpg") || lowerPath.endsWith(".jpeg")) {
+        return "image/jpeg";
+    }
+    if (lowerPath.endsWith(".webp")) {
+        return "image/webp";
+    }
+    return "image/png";
 }

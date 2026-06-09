@@ -23,3 +23,15 @@ export function getPublicBaseUrl(): string {
 export function getCosPublicBaseUrl(): string {
   return (process.env.COS_PUBLIC_BASE_URL ?? "").replace(/\/+$/, "");
 }
+
+export function getCosUploadUrl(): string {
+  return process.env.COS_UPLOAD_URL ?? "";
+}
+
+export function getCosUploadAuthorization(): string {
+  return process.env.COS_UPLOAD_AUTHORIZATION ?? "";
+}
+
+export function getWechatCloudEnv(): string {
+  return process.env.WECHAT_CLOUD_ENV ?? "";
+}

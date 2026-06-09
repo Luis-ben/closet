@@ -4,17 +4,34 @@ import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import multipart from "@fastify/multipart";
 import type { FastifyInstance } from "fastify";
+import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
 import { AppError } from "../../utils/errors";
+import { nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { allowedImageMimeTypes, maxImageSizeBytes } from "../../utils/validation";
-import { getImageStorageProvider, getPublicBaseUrl, getUploadDir } from "./config";
+import { parseWithSchema } from "../../utils/validation";
+import {
+  getCosPublicBaseUrl,
+  getCosUploadAuthorization,
+  getCosUploadUrl,
+  getImageStorageProvider,
+  getPublicBaseUrl,
+  getUploadDir,
+  getWechatCloudEnv
+} from "./config";
 
 const mimeToExtension: Record<string, string> = {
   "image/jpeg": ".jpg",
   "image/png": ".png",
   "image/webp": ".webp"
 };
+
+const createUploadTokenBodySchema = z.object({
+  fileName: z.string().min(1).max(160),
+  mimeType: z.enum(allowedImageMimeTypes),
+  sizeBytes: z.number().int().positive().max(maxImageSizeBytes)
+});
 
 export async function uploadRoutes(app: FastifyInstance): Promise<void> {
   await app.register(multipart, {
@@ -23,6 +40,71 @@ export async function uploadRoutes(app: FastifyInstance): Promise<void> {
       fileSize: maxImageSizeBytes
     }
   });
+
+  app.post(
+    "/uploads/image-token",
+    {
+      preHandler: authenticateRequest
+    },
+    async (request) => {
+      const body = parseWithSchema(createUploadTokenBodySchema, request.body);
+      const extension = mimeToExtension[body.mimeType] ?? ".png";
+      const objectKey = createObjectKey(request.user!.id, extension);
+      const storageProvider = getImageStorageProvider();
+
+      if (storageProvider === "cos") {
+        return ok({
+          provider: storageProvider,
+          objectKey,
+          uploadUrl: requireConfig(getCosUploadUrl(), "COS_UPLOAD_URL"),
+          imageUrl: `${requireConfig(getCosPublicBaseUrl(), "COS_PUBLIC_BASE_URL")}/${objectKey}`,
+          headers: {
+            Authorization: requireConfig(getCosUploadAuthorization(), "COS_UPLOAD_AUTHORIZATION"),
+            "Content-Type": body.mimeType
+          },
+          formData: null,
+          cloudPath: null,
+          imageMeta: {
+            sizeBytes: body.sizeBytes,
+            mimeType: body.mimeType
+          },
+          expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        });
+      }
+
+      if (storageProvider === "wechat-cloud") {
+        return ok({
+          provider: storageProvider,
+          objectKey,
+          uploadUrl: null,
+          imageUrl: `cloud://${requireConfig(getWechatCloudEnv(), "WECHAT_CLOUD_ENV")}/${objectKey}`,
+          headers: null,
+          formData: null,
+          cloudPath: objectKey,
+          imageMeta: {
+            sizeBytes: body.sizeBytes,
+            mimeType: body.mimeType
+          },
+          expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        });
+      }
+
+      return ok({
+        provider: storageProvider,
+        objectKey,
+        uploadUrl: `${getPublicBaseUrl()}/api/uploads/image`,
+        imageUrl: null,
+        headers: null,
+        formData: null,
+        cloudPath: null,
+        imageMeta: {
+          sizeBytes: body.sizeBytes,
+          mimeType: body.mimeType
+        },
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+      });
+    }
+  );
 
   app.post(
     "/uploads/image",
@@ -78,4 +160,18 @@ export async function uploadRoutes(app: FastifyInstance): Promise<void> {
       });
     }
   );
+}
+
+function createObjectKey(userId: string, extension: string): string {
+  const date = nowIso().slice(0, 10);
+
+  return `uploads/${userId}/${date}/${Date.now()}-${randomUUID()}${extension}`;
+}
+
+function requireConfig(value: string, name: string): string {
+  if (!value) {
+    throw new AppError(500, "UPLOAD_STORAGE_NOT_CONFIGURED", `${name} 未配置`);
+  }
+
+  return value;
 }

@@ -1,13 +1,15 @@
 import { showLoading, hideLoading, showToast } from "./feedback";
-import type { ApiResponse } from "./request";
+import { request, type ApiResponse } from "./request";
 
-export interface MockUploadedImage {
+export interface UploadedImage {
   imageUrl: string;
   imageMeta: {
     sizeBytes: number;
     mimeType: "image/jpeg" | "image/png" | "image/webp";
   };
 }
+
+export type MockUploadedImage = UploadedImage;
 
 interface ChooseImageOptions {
   sourceType?: "album" | "camera";
@@ -22,7 +24,19 @@ interface AppWithGlobalData {
 
 interface UploadResponse {
   imageUrl: string;
-  imageMeta: MockUploadedImage["imageMeta"];
+  imageMeta: UploadedImage["imageMeta"];
+}
+
+interface UploadTokenResponse {
+  provider: "local" | "cos" | "wechat-cloud";
+  objectKey: string;
+  uploadUrl: string | null;
+  imageUrl: string | null;
+  headers: Record<string, string> | null;
+  formData: Record<string, string> | null;
+  cloudPath: string | null;
+  imageMeta: UploadedImage["imageMeta"];
+  expiresAt: string;
 }
 
 const maxImageSizeBytes = 5 * 1024 * 1024;
@@ -43,7 +57,7 @@ export async function chooseMockImage(options: ChooseImageOptions = {}): Promise
   showLoading("上传中");
 
   try {
-    return await uploadImageFile(localImage.tempFilePath);
+    return await uploadImageFile(localImage);
   } catch {
     showToast("图片上传失败，请稍后重试");
     return null;
@@ -106,7 +120,35 @@ function chooseLocalImage(sourceType: "album" | "camera"): Promise<WechatMinipro
   });
 }
 
-function uploadImageFile(filePath: string): Promise<MockUploadedImage> {
+async function uploadImageFile(file: WechatMiniprogram.MediaFile): Promise<UploadedImage> {
+  const mimeType = getMimeType(file.tempFilePath);
+  const tokenResponse = await request<UploadTokenResponse>({
+    url: "/uploads/image-token",
+    method: "POST",
+    data: {
+      fileName: file.tempFilePath.split("/").pop() || "image.png",
+      mimeType,
+      sizeBytes: file.size
+    }
+  });
+  const uploadToken = tokenResponse.data;
+
+  if (!uploadToken) {
+    throw new Error("上传凭证获取失败");
+  }
+
+  if (uploadToken.provider === "wechat-cloud") {
+    return uploadToWechatCloud(file.tempFilePath, uploadToken);
+  }
+
+  if (uploadToken.provider === "cos") {
+    return uploadToCos(file.tempFilePath, uploadToken);
+  }
+
+  return uploadToLocalServer(file.tempFilePath);
+}
+
+function uploadToLocalServer(filePath: string): Promise<UploadedImage> {
   const app = getApp<AppWithGlobalData>();
   const token = app.globalData.token;
 
@@ -138,4 +180,79 @@ function uploadImageFile(filePath: string): Promise<MockUploadedImage> {
       }
     });
   });
+}
+
+function uploadToCos(filePath: string, uploadToken: UploadTokenResponse): Promise<UploadedImage> {
+  const uploadUrl = uploadToken.uploadUrl;
+  const imageUrl = uploadToken.imageUrl;
+
+  if (!uploadUrl || !imageUrl) {
+    return Promise.reject(new Error("COS 上传凭证不完整"));
+  }
+
+  return new Promise((resolve, reject) => {
+    wx.uploadFile({
+      url: uploadUrl,
+      filePath,
+      name: "file",
+      header: uploadToken.headers ?? {},
+      formData: {
+        key: uploadToken.objectKey,
+        ...(uploadToken.formData ?? {})
+      },
+      success(result) {
+        if (result.statusCode >= 200 && result.statusCode < 300) {
+          resolve({
+            imageUrl,
+            imageMeta: uploadToken.imageMeta
+          });
+          return;
+        }
+
+        reject(new Error("COS 上传失败"));
+      },
+      fail(error) {
+        reject(error);
+      }
+    });
+  });
+}
+
+function uploadToWechatCloud(filePath: string, uploadToken: UploadTokenResponse): Promise<UploadedImage> {
+  const cloudPath = uploadToken.cloudPath;
+  const imageUrl = uploadToken.imageUrl;
+
+  if (!cloudPath || !imageUrl) {
+    return Promise.reject(new Error("微信云上传凭证不完整"));
+  }
+
+  return new Promise((resolve, reject) => {
+    wx.cloud.uploadFile({
+      cloudPath,
+      filePath,
+      success() {
+        resolve({
+          imageUrl,
+          imageMeta: uploadToken.imageMeta
+        });
+      },
+      fail(error) {
+        reject(error);
+      }
+    });
+  });
+}
+
+function getMimeType(filePath: string): UploadedImage["imageMeta"]["mimeType"] {
+  const lowerPath = filePath.toLowerCase();
+
+  if (lowerPath.endsWith(".jpg") || lowerPath.endsWith(".jpeg")) {
+    return "image/jpeg";
+  }
+
+  if (lowerPath.endsWith(".webp")) {
+    return "image/webp";
+  }
+
+  return "image/png";
 }
