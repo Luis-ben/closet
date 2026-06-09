@@ -7,6 +7,9 @@ export function assertProductionReady(): void {
   const publicBaseUrl = process.env.PUBLIC_BASE_URL ?? "";
   const uploadDir = process.env.UPLOAD_DIR ?? "";
   const databaseUrl = process.env.DATABASE_URL ?? "";
+  const wechatAppId = process.env.WECHAT_APP_ID ?? "";
+  const wechatAppSecret = process.env.WECHAT_APP_SECRET ?? "";
+  const authTokenSecret = process.env.AUTH_TOKEN_SECRET ?? "";
 
   if (!provider || provider === "mock") {
     throw new Error("生产环境必须配置真实 IMAGE_GENERATION_PROVIDER");
@@ -26,5 +29,13 @@ export function assertProductionReady(): void {
 
   if (!databaseUrl) {
     throw new Error("生产环境必须配置 DATABASE_URL，不能使用内存 mock store");
+  }
+
+  if (!wechatAppId || !wechatAppSecret) {
+    throw new Error("生产环境必须配置 WECHAT_APP_ID 和 WECHAT_APP_SECRET");
+  }
+
+  if (!authTokenSecret || authTokenSecret === "dev-only-auth-secret-change-me" || authTokenSecret.length < 32) {
+    throw new Error("生产环境必须配置至少 32 位的 AUTH_TOKEN_SECRET");
   }
 }

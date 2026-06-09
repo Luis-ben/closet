@@ -3,6 +3,7 @@ import { request } from "./utils/request";
 
 interface LoginResponse {
   token: string;
+  expiresIn: number;
 }
 
 App({

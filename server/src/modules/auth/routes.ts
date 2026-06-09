@@ -5,6 +5,8 @@ import type { UserRecord } from "../../store/types";
 import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
+import { createSessionToken } from "./token";
+import { exchangeWechatCodeForSession } from "./wechatSession";
 
 const wechatLoginBodySchema = z.object({
   code: z.string().min(1).max(128),
@@ -15,14 +17,14 @@ const wechatLoginBodySchema = z.object({
 export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.post("/auth/wechat-login", async (request) => {
     const body = parseWithSchema(wechatLoginBodySchema, request.body);
-    const openid = `openid_${body.code.slice(0, 32)}`;
+    const session = await exchangeWechatCodeForSession(body.code);
     const now = nowIso();
-    let user = store.users.find((item) => item.openid === openid && !item.deletedAt);
+    let user = store.users.find((item) => item.openid === session.openid && !item.deletedAt);
 
     if (!user) {
       user = {
         _id: createId("user"),
-        openid,
+        openid: session.openid,
         nickname: body.nickname ?? "微信用户",
         avatarUrl: body.avatarUrl ?? "",
         plan: "free",
@@ -42,10 +44,17 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         balanceAfter: user.credits,
         createdAt: now
       });
+    } else {
+      user.nickname = body.nickname ?? user.nickname;
+      user.avatarUrl = body.avatarUrl ?? user.avatarUrl;
+      user.updatedAt = now;
     }
 
+    const sessionToken = createSessionToken(user);
+
     return ok({
-      token: `mock-token-${user._id}`,
+      token: sessionToken.token,
+      expiresIn: sessionToken.expiresIn,
       user
     });
   });

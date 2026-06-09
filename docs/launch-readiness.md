@@ -10,7 +10,7 @@
 
 - 小程序请求域名仍是本地 `http://localhost:3000/api`，提交审核前必须替换成已备案并配置在微信公众平台的 HTTPS 合法域名。
 - 后端当前使用内存 mock store，服务重启会丢数据；正式上线必须接 MongoDB 或 PostgreSQL。
-- 登录接口当前用 mock openid/token 逻辑，正式上线必须接微信 `code2Session` 并管理真实 session/token。
+- 登录接口已具备微信 `code2Session` 和签名 token 代码路径；正式上线仍必须配置真实 `WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`，并接入数据库保存真实用户数据。
 - AI 生成适配器可通过统一 adapter 接入，但正式模型、COS/云存储、内容安全审核、费用监控仍需生产配置。
 
 ## 已完成
@@ -40,6 +40,8 @@
 - 新增 `miniprogram/utils/config.ts` 集中管理 API 地址和 mock fallback。
 - 小程序正式版运行时会检查配置，发现 `localhost` 或 mock token fallback 会提示不可发布。
 - 后端 `NODE_ENV=production` 时会检查 AI provider、HTTPS `PUBLIC_BASE_URL`、上传目录/存储配置、`DATABASE_URL`，不满足则拒绝启动。
+- 后端登录已改为可配置微信 `code2Session`，生产环境强制校验微信 AppID/Secret 和签名 token secret。
+- 后端 token 已从开发用 mock 前缀升级为 HMAC 签名 token，包含过期时间；mock token 只允许非生产环境使用。
 - 隐私页删除衣物/模特不再是占位提示，已接真实后端接口。
 - 模特选择从本地 TODO 改为 `/user-photos/:id/activate` 后端激活接口。
 - 隐私删除成功后会清理本地模特偏好、待试穿衣物、最近任务等缓存；注销账号后会清理本地 token。
@@ -61,7 +63,8 @@
 2. 生产后端
    - 替换内存 store 为数据库。
    - 为 `userId`、`ai_tasks.status`、关键时间字段建立索引。
-   - 实现真实微信登录 `code2Session`。
+   - 配置真实微信登录 `code2Session` 所需的 AppID/Secret，并在微信后台绑定合法域名。
+   - 配置生产环境变量：`WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`、`DATABASE_URL`、`PUBLIC_BASE_URL`、`IMAGE_GENERATION_PROVIDER`。
    - 接入 COS 或微信云存储，避免使用本地 uploads 作为生产图片库。
    - 为 AI task queue 接入真实队列，避免依赖进程内 setTimeout。
 
