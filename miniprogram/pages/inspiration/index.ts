@@ -102,6 +102,11 @@ Page({
     cubeStyleValue: "commute",
     cubeStyleLabel: "通勤方案",
     cubeStyleTone: "冷静蓝灰",
+    cubeProgressText: "0/3 已匹配",
+    cubeProgressPercent: 0,
+    cubeMissingText: "还缺上装、下装、鞋包",
+    cubeMetaText: "上传后会按上装、下装、鞋包自动组成一套",
+    cubeComplete: false,
     cubeButtonText: "使用这套",
     cubeIndex: 0,
     recommendationTitle: "先上传衣服",
@@ -224,19 +229,32 @@ Page({
       };
     });
     const cubeReady = usedIds.length > 0;
+    const cubeComplete = usedIds.length === cubeSlotDefs.length;
+    const missingLabels = cubeSlots
+      .filter((slot) => !slot.filled)
+      .map((slot) => slot.label);
 
     return {
       cubeSlots,
       cubeItemIds: usedIds,
       cubeReady,
-      cubeTitle: cubeReady ? "搭配魔方" : "搭配魔方待填充",
-      cubeDesc: cubeReady
-        ? `已拼好 ${usedIds.length} 件衣物，推荐 ${styleTemplate.title} 风格。`
-        : "先上传几件上衣、下装或鞋包，魔方会自动组成一套。",
+      cubeComplete,
+      cubeTitle: cubeComplete ? "搭配魔方已成套" : cubeReady ? "搭配魔方" : "搭配魔方待填充",
+      cubeDesc: cubeComplete
+        ? `已拼好上装、下装和鞋包，推荐 ${styleTemplate.title} 风格。`
+        : cubeReady
+          ? `已匹配 ${usedIds.length} 件衣物，可先带入试穿页继续补齐。`
+          : "先上传几件上衣、下装或鞋包，魔方会自动组成一套。",
       cubeStyleValue: styleTemplate.value,
       cubeStyleLabel: `${styleTemplate.title}方案`,
       cubeStyleTone: styleTemplate.tone,
-      cubeButtonText: cubeReady ? "使用这套" : "去上传衣服"
+      cubeProgressText: `${usedIds.length}/${cubeSlotDefs.length} 已匹配`,
+      cubeProgressPercent: Math.round((usedIds.length / cubeSlotDefs.length) * 100),
+      cubeMissingText: cubeComplete ? "上装、下装、鞋包已齐" : `还缺${missingLabels.join("、")}`,
+      cubeMetaText: cubeReady
+        ? `按 ${styleTemplate.title} 风格优先使用最近导入单品`
+        : "上传后会按上装、下装、鞋包自动组成一套",
+      cubeButtonText: cubeReady ? (cubeComplete ? "使用整套" : "带入试穿") : "去上传衣服"
     };
   },
 

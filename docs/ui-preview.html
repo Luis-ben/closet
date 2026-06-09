@@ -318,6 +318,10 @@
         gap: 8px;
       }
 
+      .cube-card-preview {
+        background: linear-gradient(180deg, #fff 0%, #f8fafd 100%);
+      }
+
       .cube-style {
         display: inline-flex;
         height: 24px;
@@ -330,6 +334,47 @@
         color: var(--blue-text);
         font-size: 11px;
         font-weight: 800;
+      }
+
+      .cube-status {
+        display: grid;
+        gap: 7px;
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 10px;
+      }
+
+      .cube-meter {
+        height: 5px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--chip);
+      }
+
+      .cube-meter span {
+        display: block;
+        height: 100%;
+        width: 100%;
+        border-radius: inherit;
+        background: var(--blue);
+      }
+
+      .cube-status-copy,
+      .cube-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .cube-status-copy b,
+      .cube-meta b {
+        flex-shrink: 0;
+        color: var(--text);
       }
 
       .cube-slot {
@@ -562,23 +607,28 @@
           <div class="title">穿搭灵感</div>
           <div class="subtitle">像从相册里找灵感一样，把衣柜单品拼成可试穿组合</div>
 
-          <div class="section card">
+          <div class="section card cube-card-preview">
             <div class="between">
               <div>
-                <b>搭配魔方</b>
+                <b>搭配魔方已成套</b>
                 <div class="cube-style">通勤方案 · 冷静蓝灰</div>
-                <div class="caption">已拼好 3 件衣物，推荐通勤风格。</div>
+                <div class="caption">已拼好上装、下装和鞋包，推荐通勤风格。</div>
               </div>
               <div>
                 <div class="button light">换一组</div>
-                <div class="button" style="margin-top:8px">使用这套</div>
+                <div class="button" style="margin-top:8px">使用整套</div>
               </div>
+            </div>
+            <div class="cube-status">
+              <div class="cube-meter"><span></span></div>
+              <div class="cube-status-copy"><b>3/3 已匹配</b><span>上装、下装、鞋包已齐</span></div>
             </div>
             <div class="cube" style="margin-top:14px">
               <div class="cube-slot tall"><span>上装 · 白</span></div>
               <div class="cube-slot"><span>下装 · 黑</span></div>
               <div class="cube-slot"><span>鞋包 · 棕</span></div>
             </div>
+            <div class="cube-meta" style="margin-top:12px"><span>按通勤风格优先使用最近导入单品</span><b>重新组合</b></div>
           </div>
 
           <div class="section">

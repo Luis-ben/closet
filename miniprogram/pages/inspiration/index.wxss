@@ -27,8 +27,14 @@
   padding: 24rpx;
   border: 1rpx solid #E8EAED;
   border-radius: 16rpx;
-  background: #FFFFFF;
+  background:
+    linear-gradient(180deg, #FFFFFF 0%, #F8FAFD 100%);
   box-shadow: 0 6rpx 18rpx rgba(60, 64, 67, 0.08);
+}
+
+.cube-card.is-complete {
+  border-color: #D2E3FC;
+  box-shadow: 0 10rpx 28rpx rgba(26, 115, 232, 0.12);
 }
 
 .cube-copy {
@@ -36,6 +42,10 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 20rpx;
+}
+
+.cube-main-copy {
+  min-width: 0;
 }
 
 .cube-actions {
@@ -83,6 +93,44 @@
   color: #202124;
 }
 
+.cube-status {
+  display: grid;
+  gap: 12rpx;
+  padding: 16rpx;
+  border: 1rpx solid #E8EAED;
+  border-radius: 16rpx;
+  background: #FFFFFF;
+}
+
+.cube-meter {
+  height: 8rpx;
+  overflow: hidden;
+  border-radius: 999rpx;
+  background: #E8F0FE;
+}
+
+.cube-meter-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: #1A73E8;
+}
+
+.cube-status-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  color: #5F6368;
+  font-size: 22rpx;
+  line-height: 1.35;
+}
+
+.cube-status-copy text:first-child {
+  flex-shrink: 0;
+  color: #202124;
+  font-weight: 700;
+}
+
 .cube-board {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -101,6 +149,7 @@
 .cube-slot.is-filled {
   border-style: solid;
   border-color: #E8EAED;
+  background: #FFFFFF;
 }
 
 .cube-slot image {
@@ -118,6 +167,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background:
+    linear-gradient(135deg, rgba(232, 240, 254, 0.88), rgba(241, 243, 244, 0.92));
   color: #9AA0A6;
   font-size: 58rpx;
   font-weight: 300;
@@ -151,6 +202,22 @@
   font-size: 20rpx;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.cube-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  color: #5F6368;
+  font-size: 22rpx;
+  line-height: 1.45;
+}
+
+.cube-meta-action {
+  flex-shrink: 0;
+  color: #1A73E8;
+  font-weight: 700;
 }
 
 .result-scroll {

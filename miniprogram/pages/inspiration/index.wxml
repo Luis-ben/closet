@@ -5,9 +5,9 @@
     <view class="subtitle">像从相册里找灵感一样，把衣柜单品拼成可试穿组合</view>
   </view>
 
-  <view class="section cube-card">
+  <view class="section cube-card {{cubeComplete ? 'is-complete' : ''}}">
     <view class="cube-copy">
-      <view>
+      <view class="cube-main-copy">
         <view class="module-title">{{cubeTitle}}</view>
         <view class="cube-style-pill">{{cubeStyleLabel}} · {{cubeStyleTone}}</view>
         <view class="caption">{{cubeDesc}}</view>
@@ -15,6 +15,16 @@
       <view class="cube-actions">
         <view class="cube-action secondary" bindtap="onShuffleCube">换一组</view>
         <view class="cube-action primary" bindtap="onUseCube">{{cubeButtonText}}</view>
+      </view>
+    </view>
+
+    <view class="cube-status">
+      <view class="cube-meter">
+        <view class="cube-meter-fill" style="width: {{cubeProgressPercent}}%;"></view>
+      </view>
+      <view class="cube-status-copy">
+        <text>{{cubeProgressText}}</text>
+        <text>{{cubeMissingText}}</text>
       </view>
     </view>
 
@@ -29,6 +39,11 @@
         <view class="slot-label">{{item.label}}</view>
         <view class="slot-hint">{{item.hint}}</view>
       </view>
+    </view>
+
+    <view class="cube-meta">
+      <view>{{cubeMetaText}}</view>
+      <view class="cube-meta-action" bindtap="onShuffleCube">重新组合</view>
     </view>
   </view>
 

@@ -106,9 +106,12 @@ Page({
                 : this.data.selectedClothingItemIds;
             const selectedClothingItemIds = baseSelectedIds.filter((id) => clothingItems.some((item) => item._id === id)).slice(0, 3);
             const modelState = this.resolveModel((_d = (_c = photoResponse.data) === null || _c === void 0 ? void 0 : _c.items) !== null && _d !== void 0 ? _d : []);
-            this.setData(Object.assign(Object.assign({ credits: (_f = (_e = meResponse.data) === null || _e === void 0 ? void 0 : _e.user.credits) !== null && _f !== void 0 ? _f : 0 }, modelState), { clothingItems, outfitNotice: pendingSelectedIds.length
-                    ? `已从搭配魔方带入 ${selectedClothingItemIds.length} 件衣物和推荐风格，可继续微调`
-                    : "", loading: false }));
+            const pendingNotice = pendingSelectedIds.length
+                ? selectedClothingItemIds.length >= 3
+                    ? "已从搭配魔方带入整套衣物和推荐风格，可继续微调"
+                    : `已从搭配魔方带入 ${selectedClothingItemIds.length} 件衣物，补齐后生成效果更稳定`
+                : "";
+            this.setData(Object.assign(Object.assign({ credits: (_f = (_e = meResponse.data) === null || _e === void 0 ? void 0 : _e.user.credits) !== null && _f !== void 0 ? _f : 0 }, modelState), { clothingItems, outfitNotice: pendingNotice, loading: false }));
             this.syncView(selectedClothingItemIds, this.data.activeCategory);
         }
         catch (_g) {

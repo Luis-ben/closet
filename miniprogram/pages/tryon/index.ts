@@ -160,13 +160,17 @@ Page({
       ).slice(0, 3);
       const modelState = this.resolveModel(photoResponse.data?.items ?? []);
 
+      const pendingNotice = pendingSelectedIds.length
+        ? selectedClothingItemIds.length >= 3
+          ? "已从搭配魔方带入整套衣物和推荐风格，可继续微调"
+          : `已从搭配魔方带入 ${selectedClothingItemIds.length} 件衣物，补齐后生成效果更稳定`
+        : "";
+
       this.setData({
         credits: meResponse.data?.user.credits ?? 0,
         ...modelState,
         clothingItems,
-        outfitNotice: pendingSelectedIds.length
-          ? `已从搭配魔方带入 ${selectedClothingItemIds.length} 件衣物和推荐风格，可继续微调`
-          : "",
+        outfitNotice: pendingNotice,
         loading: false
       });
       this.syncView(selectedClothingItemIds, this.data.activeCategory);
