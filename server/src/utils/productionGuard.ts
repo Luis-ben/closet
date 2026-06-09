@@ -1,3 +1,5 @@
+import { assertDataStoreReady } from "../store";
+
 export function assertProductionReady(): void {
   if (process.env.NODE_ENV !== "production") {
     return;
@@ -30,6 +32,8 @@ export function assertProductionReady(): void {
   if (!databaseUrl) {
     throw new Error("生产环境必须配置 DATABASE_URL，不能使用内存 mock store");
   }
+
+  assertDataStoreReady();
 
   if (!wechatAppId || !wechatAppSecret) {
     throw new Error("生产环境必须配置 WECHAT_APP_ID 和 WECHAT_APP_SECRET");
