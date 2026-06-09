@@ -1,4 +1,4 @@
-import { store } from "../../store/mockStore";
+import { store } from "../../store";
 import type { CreditLogRecord } from "../../store/types";
 import { AppError } from "../../utils/errors";
 import { createId, nowIso } from "../../utils/ids";

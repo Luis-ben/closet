@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { store } from "../../store/mockStore";
+import { store } from "../../store";
 import type { UserRecord } from "../../store/types";
 import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";

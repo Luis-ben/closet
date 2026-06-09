@@ -43,6 +43,7 @@
 - 后端登录已改为可配置微信 `code2Session`，生产环境强制校验微信 AppID/Secret 和签名 token secret。
 - 后端 token 已从开发用 mock 前缀升级为 HMAC 签名 token，包含过期时间；mock token 只允许非生产环境使用。
 - 衣物和模特创建已统一图片输入校验；生产环境禁止 `mock://`、`wxfile://` 和任意外部 HTTP 图片，必须使用对象存储或本服务上传目录图片，并提交 `imageMeta`。
+- 后端业务模块已从直接依赖 `mockStore` 收口到统一 `store/index.ts` 数据入口，为替换真实数据库做准备。
 - 隐私页删除衣物/模特不再是占位提示，已接真实后端接口。
 - 模特选择从本地 TODO 改为 `/user-photos/:id/activate` 后端激活接口。
 - 隐私删除成功后会清理本地模特偏好、待试穿衣物、最近任务等缓存；注销账号后会清理本地 token。

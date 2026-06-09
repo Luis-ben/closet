@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { authenticateRequest } from "../../plugins/auth";
-import { store } from "../../store/mockStore";
+import { store } from "../../store";
 import { AppError } from "../../utils/errors";
 import { nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";

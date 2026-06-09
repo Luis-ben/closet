@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { AppError } from "../utils/errors";
-import { store } from "../store/mockStore";
+import { store } from "../store";
 import { verifyDevMockToken, verifySessionToken } from "../modules/auth/token";
 
 export async function authPlugin(app: FastifyInstance): Promise<void> {

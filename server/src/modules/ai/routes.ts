@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
-import { defaultModelPhoto, store } from "../../store/mockStore";
+import { defaultModelPhoto, store } from "../../store";
 import type { AiTaskRecord, ModelType } from "../../store/types";
 import { AppError } from "../../utils/errors";
 import { createId, nowIso } from "../../utils/ids";

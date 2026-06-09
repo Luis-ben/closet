@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
-import { store } from "../../store/mockStore";
+import { store } from "../../store";
 import type { ClothingItemRecord } from "../../store/types";
 import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../uploads/imageInput";
 import { AppError } from "../../utils/errors";

@@ -1,4 +1,4 @@
-import { defaultModelPhoto, store } from "../../store/mockStore";
+import { defaultModelPhoto, store } from "../../store";
 import type { AiTaskRecord } from "../../store/types";
 import { AppError } from "../../utils/errors";
 import { nowIso } from "../../utils/ids";
