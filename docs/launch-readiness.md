@@ -97,4 +97,5 @@
 - `miniprogram`: `npx tsc -p tsconfig.json`
 - `server`: `npm run build`
 - `server`: `npm run check:production` 可一次性检查生产环境变量缺口。
+- `server`: `npm run smoke:release` 可验证登录、上传票据、衣物/模特、AI 生成、额度流水和隐私删除主链路。
 - 页面预览截图：`output/playwright/ui-preview.png`
