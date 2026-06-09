@@ -1,7 +1,5 @@
 import { createContentSafetyAdapter } from "./adapter";
 
-const adapter = createContentSafetyAdapter();
-
 interface ClothingSafetyInput {
   userId: string;
   imageUrl: string;
@@ -21,6 +19,8 @@ interface TryOnSafetyInput {
 }
 
 export async function checkClothingInputSafety(input: ClothingSafetyInput): Promise<void> {
+  const adapter = createContentSafetyAdapter();
+
   await adapter.checkImage({
     userId: input.userId,
     imageUrl: input.imageUrl,
@@ -34,6 +34,8 @@ export async function checkClothingInputSafety(input: ClothingSafetyInput): Prom
 }
 
 export async function checkModelInputSafety(input: ModelSafetyInput): Promise<void> {
+  const adapter = createContentSafetyAdapter();
+
   await adapter.checkImage({
     userId: input.userId,
     imageUrl: input.imageUrl,
@@ -47,6 +49,7 @@ export async function checkModelInputSafety(input: ModelSafetyInput): Promise<vo
 }
 
 export async function checkTryOnInputSafety(input: TryOnSafetyInput): Promise<void> {
+  const adapter = createContentSafetyAdapter();
   const promptParts = [input.scene, input.style].filter(Boolean).join(" ");
 
   await adapter.checkText({
