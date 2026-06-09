@@ -1,11 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
-import { store } from "../../store";
-import type { UserPhotoRecord } from "../../store/types";
+import { getUserPhotoRepository } from "../../store/userPhotoRepository";
 import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../uploads/imageInput";
-import { AppError } from "../../utils/errors";
-import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
 
@@ -28,29 +25,11 @@ export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
     async (request) => {
       const body = parseWithSchema(createUserPhotoBodySchema, request.body);
       requireProductionImageMeta(body.imageMeta);
-      const now = nowIso();
-
-      for (const photo of store.userPhotos) {
-        if (photo.userId === request.user!.id && photo.type === "personal_model") {
-          photo.isActiveModel = false;
-          photo.updatedAt = now;
-        }
-      }
-
-      const photo: UserPhotoRecord = {
-        _id: createId("model"),
+      const photo = await getUserPhotoRepository().createPersonalModel({
         userId: request.user!.id,
         imageUrl: body.imageUrl,
-        type: "personal_model",
-        isActiveModel: true,
-        displayName: body.displayName,
-        auditStatus: "pass",
-        createdAt: now,
-        updatedAt: now,
-        deletedAt: null
-      };
-
-      store.userPhotos.push(photo);
+        displayName: body.displayName
+      });
 
       return ok({
         photo
@@ -64,9 +43,7 @@ export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
       preHandler: authenticateRequest
     },
     async (request) => {
-      const personalModels = store.userPhotos.filter(
-        (photo) => photo.userId === request.user!.id && !photo.deletedAt
-      );
+      const personalModels = await getUserPhotoRepository().listByUser(request.user!.id);
 
       return ok({
         items: personalModels
@@ -82,26 +59,7 @@ export async function userPhotoRoutes(app: FastifyInstance): Promise<void> {
     async (request) => {
       const params = parseWithSchema(photoParamsSchema, request.params);
       const userId = request.user!.id;
-      const now = nowIso();
-      const model = store.userPhotos.find(
-        (photo) =>
-          photo._id === params.id &&
-          photo.userId === userId &&
-          photo.type === "personal_model" &&
-          photo.auditStatus === "pass" &&
-          !photo.deletedAt
-      );
-
-      if (!model) {
-        throw new AppError(404, "MODEL_PHOTO_NOT_FOUND", "我的模特不存在");
-      }
-
-      for (const photo of store.userPhotos) {
-        if (photo.userId === userId && photo.type === "personal_model" && !photo.deletedAt) {
-          photo.isActiveModel = photo._id === model._id;
-          photo.updatedAt = now;
-        }
-      }
+      const model = await getUserPhotoRepository().activatePersonalModel(params.id, userId);
 
       return ok({
         photo: model

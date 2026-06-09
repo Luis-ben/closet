@@ -1,11 +1,9 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
-import { store } from "../../store";
-import type { ClothingItemRecord } from "../../store/types";
+import { getClothingRepository } from "../../store/clothingRepository";
 import { imageMetaSchema, imageUrlSchema, requireProductionImageMeta } from "../uploads/imageInput";
 import { AppError } from "../../utils/errors";
-import { createId, nowIso } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
 
@@ -34,9 +32,7 @@ export async function clothingItemRoutes(app: FastifyInstance): Promise<void> {
     async (request) => {
       const body = parseWithSchema(createClothingItemBodySchema, request.body);
       requireProductionImageMeta(body.imageMeta);
-      const now = nowIso();
-      const item: ClothingItemRecord = {
-        _id: createId("cloth"),
+      const item = await getClothingRepository().create({
         userId: request.user!.id,
         imageUrl: body.imageUrl,
         sourceType: body.sourceType,
@@ -45,15 +41,8 @@ export async function clothingItemRoutes(app: FastifyInstance): Promise<void> {
         color: body.color,
         season: body.season,
         occasion: body.occasion,
-        note: body.note,
-        useCount: 0,
-        status: "normal",
-        createdAt: now,
-        updatedAt: now,
-        deletedAt: null
-      };
-
-      store.clothingItems.push(item);
+        note: body.note
+      });
 
       return ok({
         item
@@ -67,9 +56,7 @@ export async function clothingItemRoutes(app: FastifyInstance): Promise<void> {
       preHandler: authenticateRequest
     },
     async (request) => {
-      const items = store.clothingItems.filter(
-        (item) => item.userId === request.user!.id && item.status === "normal"
-      );
+      const items = await getClothingRepository().listActiveByUser(request.user!.id);
 
       return ok({
         items
@@ -84,17 +71,11 @@ export async function clothingItemRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request) => {
       const params = parseWithSchema(deleteParamsSchema, request.params);
-      const item = store.clothingItems.find(
-        (record) => record._id === params.id && record.userId === request.user!.id
-      );
+      const deleted = await getClothingRepository().softDeleteByUser(params.id, request.user!.id);
 
-      if (!item || item.status === "deleted") {
+      if (!deleted) {
         throw new AppError(404, "CLOTHING_ITEM_NOT_FOUND", "衣物不存在");
       }
-
-      item.status = "deleted";
-      item.deletedAt = nowIso();
-      item.updatedAt = item.deletedAt;
 
       return ok({
         deleted: true

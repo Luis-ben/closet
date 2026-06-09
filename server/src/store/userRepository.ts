@@ -14,6 +14,7 @@ export interface UserRepository {
   findActiveById(userId: string): Promise<UserRecord | null>;
   findActiveByOpenid(openid: string): Promise<UserRecord | null>;
   upsertWechatUser(input: UpsertWechatUserInput): Promise<UserRecord>;
+  softDeleteById(userId: string, deletedAt: string): Promise<boolean>;
 }
 
 function createSignupCreditLog(user: UserRecord, createdAt: string): CreditLogRecord {
@@ -65,6 +66,19 @@ class MemoryUserRepository implements UserRepository {
 
     return user;
   }
+
+  async softDeleteById(userId: string, deletedAt: string): Promise<boolean> {
+    const user = await this.findActiveById(userId);
+
+    if (!user) {
+      return false;
+    }
+
+    user.deletedAt = deletedAt;
+    user.updatedAt = deletedAt;
+
+    return true;
+  }
 }
 
 class MongoUserRepository implements UserRepository {
@@ -113,6 +127,24 @@ class MongoUserRepository implements UserRepository {
     }
 
     return this.createUserWithSignupCreditLog(db, input, now);
+  }
+
+  async softDeleteById(userId: string, deletedAt: string): Promise<boolean> {
+    const db = await getMongoDb();
+    const result = await db.collection<UserRecord>("users").updateOne(
+      {
+        _id: userId,
+        deletedAt: null
+      },
+      {
+        $set: {
+          deletedAt,
+          updatedAt: deletedAt
+        }
+      }
+    );
+
+    return result.modifiedCount > 0;
   }
 
   private async createUserWithSignupCreditLog(

@@ -1,4 +1,10 @@
-import { defaultModelPhoto, store } from "../../store";
+import { defaultModelPhoto } from "../../store";
+import { getAiTaskRepository } from "../../store/aiTaskRepository";
+import {
+  assertAllClothingItemsFound,
+  getClothingRepository
+} from "../../store/clothingRepository";
+import { getUserPhotoRepository } from "../../store/userPhotoRepository";
 import type { AiTaskRecord } from "../../store/types";
 import { AppError } from "../../utils/errors";
 import { nowIso } from "../../utils/ids";
@@ -26,34 +32,21 @@ export async function processOutfitTask(
   taskId: string,
   adapter: ImageGenerationAdapter
 ): Promise<void> {
-  const task = store.aiTasks.find((item) => item._id === taskId);
+  const task = await getAiTaskRepository().markRunning(taskId, nowIso());
 
   if (!task) {
     return;
   }
 
-  if (task.status !== "queued") {
-    return;
-  }
-
-  task.status = "running";
-  task.updatedAt = nowIso();
-
   try {
     await wait(MOCK_GENERATION_DELAY_MS);
 
-    const modelPhoto = resolveTaskModelPhoto(task);
-    const clothingItems = task.clothingItemIds.map((itemId) => {
-      const item = store.clothingItems.find(
-        (record) => record._id === itemId && record.userId === task.userId && record.status === "normal"
-      );
-
-      if (!item) {
-        throw new AppError(404, "CLOTHING_ITEM_NOT_FOUND", "衣物不存在");
-      }
-
-      return item;
-    });
+    const modelPhoto = await resolveTaskModelPhoto(task);
+    const clothingItems = await getClothingRepository().findManyActiveByUser(
+      task.clothingItemIds,
+      task.userId
+    );
+    assertAllClothingItemsFound(task.clothingItemIds, clothingItems);
 
     const result = await adapter.createOutfitRenderTask({
       taskId: task._id,
@@ -64,39 +57,34 @@ export async function processOutfitTask(
       style: task.style
     });
 
-    task.status = "success";
-    task.resultImageUrl = result.imageUrl;
-    task.costEstimate = result.costEstimate;
-    task.completedAt = nowIso();
-    task.updatedAt = task.completedAt;
-
-    clothingItems.forEach((item) => {
-      item.useCount += 1;
-      item.updatedAt = task.completedAt!;
+    const completedAt = nowIso();
+    await getAiTaskRepository().markSuccess({
+      taskId: task._id,
+      resultImageUrl: result.imageUrl,
+      costEstimate: result.costEstimate,
+      completedAt
     });
+    await getClothingRepository().incrementUseCounts(task.userId, task.clothingItemIds, completedAt);
   } catch (error) {
-    task.status = "failed";
-    task.errorCode = error instanceof AppError ? error.code : "AI_FAILED";
-    task.errorMessage = error instanceof Error ? error.message : "AI 生成失败";
-    task.completedAt = nowIso();
-    task.updatedAt = task.completedAt;
+    const completedAt = nowIso();
+    await getAiTaskRepository().markFailed({
+      taskId: task._id,
+      errorCode: error instanceof AppError ? error.code : "AI_FAILED",
+      errorMessage: error instanceof Error ? error.message : "AI 生成失败",
+      completedAt
+    });
     await refundCredits(task.userId, 1, task._id);
   }
 }
 
-function resolveTaskModelPhoto(task: AiTaskRecord) {
+async function resolveTaskModelPhoto(task: AiTaskRecord) {
   if (task.modelType === "default_model") {
     return defaultModelPhoto;
   }
 
-  const modelPhoto = store.userPhotos.find(
-    (photo) =>
-      photo._id === task.modelPhotoId &&
-      photo.userId === task.userId &&
-      photo.type === "personal_model" &&
-      photo.auditStatus === "pass" &&
-      !photo.deletedAt
-  );
+  const modelPhoto = task.modelPhotoId
+    ? await getUserPhotoRepository().findPassPersonalModelById(task.modelPhotoId, task.userId)
+    : null;
 
   if (!modelPhoto) {
     throw new AppError(404, "MODEL_PHOTO_NOT_FOUND", "我的模特不存在");

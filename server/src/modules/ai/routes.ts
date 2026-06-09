@@ -1,13 +1,19 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { authenticateRequest } from "../../plugins/auth";
-import { defaultModelPhoto, store } from "../../store";
-import type { AiTaskRecord, ModelType } from "../../store/types";
+import { defaultModelPhoto } from "../../store";
+import { getAiTaskRepository } from "../../store/aiTaskRepository";
+import {
+  assertAllClothingItemsFound,
+  getClothingRepository
+} from "../../store/clothingRepository";
+import { getUserPhotoRepository } from "../../store/userPhotoRepository";
+import type { ModelType } from "../../store/types";
 import { AppError } from "../../utils/errors";
-import { createId, nowIso } from "../../utils/ids";
+import { createId } from "../../utils/ids";
 import { ok } from "../../utils/response";
 import { parseWithSchema } from "../../utils/validation";
-import { deductCredits, ensureCredits } from "../credits/service";
+import { deductCredits, ensureCredits, refundCredits } from "../credits/service";
 import { createImageGenerationAdapter } from "./adapterFactory";
 import { scheduleOutfitTaskProcessing } from "./taskProcessor";
 
@@ -41,33 +47,28 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
     async (request, reply) => {
       const body = parseWithSchema(outfitRenderBodySchema, request.body);
       const userId = request.user!.id;
-      const clothingItems = body.clothingItemIds.map((itemId) =>
-        store.clothingItems.find(
-          (item) => item._id === itemId && item.userId === userId && item.status === "normal"
-        )
+      const clothingItems = await getClothingRepository().findManyActiveByUser(
+        body.clothingItemIds,
+        userId
       );
+      assertAllClothingItemsFound(body.clothingItemIds, clothingItems);
 
-      if (clothingItems.some((item) => !item)) {
-        throw new AppError(404, "CLOTHING_ITEM_NOT_FOUND", "衣物不存在");
-      }
-
-      const activeModel = store.userPhotos.find(
-        (photo) =>
-          photo.userId === userId &&
-          photo.type === "personal_model" &&
-          photo.isActiveModel &&
-          photo.auditStatus === "pass" &&
-          !photo.deletedAt
-      );
+      const activeModel = await getUserPhotoRepository().findActivePersonalModel(userId);
       const modelType: ModelType = body.modelType ?? (activeModel ? "personal_model" : "default_model");
-      const modelPhotoId = resolveModelPhotoId(userId, modelType, body.modelPhotoId, activeModel?._id);
+      const modelPhotoId = await resolveModelPhotoId(
+        userId,
+        modelType,
+        body.modelPhotoId,
+        activeModel?._id
+      );
 
       await ensureCredits(userId, 1);
 
-      const now = nowIso();
       const taskId = createId("task");
-      const task: AiTaskRecord = {
-        _id: taskId,
+      await deductCredits(userId, 1, taskId);
+
+      const task = await createTaskAfterCreditDeduction({
+        taskId,
         userId,
         modelType,
         modelPhotoId,
@@ -75,22 +76,8 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
         mode: body.mode,
         scene: body.scene ?? null,
         style: body.style ?? null,
-        shareable: body.shareable,
-        promptVersion: "mock-v1",
-        status: "queued",
-        resultImageUrl: null,
-        retryCount: 0,
-        errorCode: null,
-        errorMessage: null,
-        costEstimate: 0,
-        createdAt: now,
-        updatedAt: now,
-        completedAt: null,
-        deletedAt: null
-      };
-
-      await deductCredits(userId, 1, task._id);
-      store.aiTasks.push(task);
+        shareable: body.shareable
+      });
 
       scheduleOutfitTaskProcessing(task._id, adapter);
 
@@ -111,9 +98,7 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request) => {
       const params = parseWithSchema(taskParamsSchema, request.params);
-      const task = store.aiTasks.find(
-        (item) => item._id === params.taskId && item.userId === request.user!.id && !item.deletedAt
-      );
+      const task = await getAiTaskRepository().findActiveByUser(params.taskId, request.user!.id);
 
       if (!task) {
         throw new AppError(404, "TASK_NOT_FOUND", "任务不存在");
@@ -126,12 +111,25 @@ export async function aiRoutes(app: FastifyInstance): Promise<void> {
   );
 }
 
-function resolveModelPhotoId(
+type CreateTaskAfterCreditDeductionInput = Parameters<
+  ReturnType<typeof getAiTaskRepository>["create"]
+>[0];
+
+async function createTaskAfterCreditDeduction(input: CreateTaskAfterCreditDeductionInput) {
+  try {
+    return await getAiTaskRepository().create(input);
+  } catch (error) {
+    await refundCredits(input.userId, 1, input.taskId!);
+    throw error;
+  }
+}
+
+async function resolveModelPhotoId(
   userId: string,
   modelType: ModelType,
   requestedModelPhotoId?: string,
   activeModelPhotoId?: string
-): string | null {
+): Promise<string | null> {
   if (modelType === "default_model") {
     return defaultModelPhoto._id;
   }
@@ -142,14 +140,7 @@ function resolveModelPhotoId(
     throw new AppError(404, "MODEL_PHOTO_NOT_FOUND", "我的模特不存在");
   }
 
-  const modelPhoto = store.userPhotos.find(
-    (photo) =>
-      photo._id === modelPhotoId &&
-      photo.userId === userId &&
-      photo.type === "personal_model" &&
-      photo.auditStatus === "pass" &&
-      !photo.deletedAt
-  );
+  const modelPhoto = await getUserPhotoRepository().findPassPersonalModelById(modelPhotoId, userId);
 
   if (!modelPhoto) {
     throw new AppError(404, "MODEL_PHOTO_NOT_FOUND", "我的模特不存在");

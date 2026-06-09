@@ -189,7 +189,7 @@ class MongoCreditRepository implements CreditRepository {
 }
 
 async function runMongoCreditTransaction<T>(
-  operation: (db: Db, session: ClientSession) => Promise<T>
+  operation: (db: Db, session?: ClientSession) => Promise<T>
 ): Promise<T> {
   const db = await getMongoDb();
   const client = getMongoClient();
@@ -211,9 +211,19 @@ async function runMongoCreditTransaction<T>(
     }
 
     return transactionResult;
+  } catch (error) {
+    if (isTransactionUnsupported(error)) {
+      return operation(db);
+    }
+
+    throw error;
   } finally {
     await session.endSession();
   }
+}
+
+function isTransactionUnsupported(error: unknown): boolean {
+  return error instanceof Error && /Transaction numbers are only allowed|replica set|standalone/i.test(error.message);
 }
 
 const memoryCreditRepository = new MemoryCreditRepository();
