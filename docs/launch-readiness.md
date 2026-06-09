@@ -50,7 +50,7 @@
 - 隐私删除已改为通过仓储软删除衣物和模特；注销账号会软删除用户并清理关联衣物/模特。
 - AI 任务调度已抽象为队列：开发环境可用内存队列，生产环境禁止内存队列，可通过数据库持久队列轮询 `queued` 任务。
 - 图片存储已抽象为 `IMAGE_STORAGE_PROVIDER`：生产环境禁止本地图片存储，支持按 COS 公网前缀或微信云存储 `cloud://` 校验图片来源。
-- 上传链路已新增 `/uploads/image-token` 票据接口；小程序上传工具会先获取票据，再按 local、COS 或微信云存储路径上传并回填 `imageUrl/imageMeta`。
+- 上传链路已新增 `/uploads/image-token` 票据接口；小程序上传工具会先获取票据，再按 local、COS PUT 签名或微信云存储路径上传并回填 `imageUrl/imageMeta`。
 - 内容安全已抽象为 `CONTENT_SAFETY_PROVIDER`：衣物图片/备注、模特图片/名称、试穿场景/风格会在入库或扣费前审核；生产环境禁止 mock 审核 provider。
 - 隐私页删除衣物/模特不再是占位提示，已接真实后端接口。
 - 模特选择从本地 TODO 改为 `/user-photos/:id/activate` 后端激活接口。
@@ -75,7 +75,7 @@
    - 为 `userId`、`ai_tasks.status`、关键时间字段建立索引。
    - 配置真实微信登录 `code2Session` 所需的 AppID/Secret，并在微信后台绑定合法域名。
    - 配置生产环境变量：`WECHAT_APP_ID`、`WECHAT_APP_SECRET`、`AUTH_TOKEN_SECRET`、`DATABASE_URL`、`DATA_STORE_PROVIDER`、`PUBLIC_BASE_URL`、`IMAGE_GENERATION_PROVIDER`、`IMAGE_STORAGE_PROVIDER`、`AI_TASK_QUEUE_PROVIDER`、`CONTENT_SAFETY_PROVIDER`。
-   - 接入 COS 或微信云存储真实上传签名/云环境配置，并完成真机上传验证，避免使用本地 uploads 作为生产图片库。
+   - 配置 COS 密钥/桶/地域或微信云环境，并完成真机上传验证，避免使用本地 uploads 作为生产图片库。
    - 将 AI task queue 切换为 `database` 或外部队列，并完成多实例/重试策略压测。
 
 3. AI 与安全

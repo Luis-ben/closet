@@ -28,8 +28,20 @@ export function getCosUploadUrl(): string {
   return process.env.COS_UPLOAD_URL ?? "";
 }
 
-export function getCosUploadAuthorization(): string {
-  return process.env.COS_UPLOAD_AUTHORIZATION ?? "";
+export function getCosSecretId(): string {
+  return process.env.COS_SECRET_ID ?? "";
+}
+
+export function getCosSecretKey(): string {
+  return process.env.COS_SECRET_KEY ?? "";
+}
+
+export function getCosBucket(): string {
+  return process.env.COS_BUCKET ?? "";
+}
+
+export function getCosRegion(): string {
+  return process.env.COS_REGION ?? "";
 }
 
 export function getWechatCloudEnv(): string {

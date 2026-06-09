@@ -128,22 +128,29 @@ function uploadToCos(filePath, uploadToken) {
         return Promise.reject(new Error("COS 上传凭证不完整"));
     }
     return new Promise((resolve, reject) => {
-        var _a, _b;
-        wx.uploadFile({
-            url: uploadUrl,
+        wx.getFileSystemManager().readFile({
             filePath,
-            name: "file",
-            header: (_a = uploadToken.headers) !== null && _a !== void 0 ? _a : {},
-            formData: Object.assign({ key: uploadToken.objectKey }, ((_b = uploadToken.formData) !== null && _b !== void 0 ? _b : {})),
-            success(result) {
-                if (result.statusCode >= 200 && result.statusCode < 300) {
-                    resolve({
-                        imageUrl,
-                        imageMeta: uploadToken.imageMeta
-                    });
-                    return;
-                }
-                reject(new Error("COS 上传失败"));
+            success(fileResult) {
+                var _a;
+                wx.request({
+                    url: uploadUrl,
+                    method: "PUT",
+                    data: fileResult.data,
+                    header: (_a = uploadToken.headers) !== null && _a !== void 0 ? _a : {},
+                    success(result) {
+                        if (result.statusCode >= 200 && result.statusCode < 300) {
+                            resolve({
+                                imageUrl,
+                                imageMeta: uploadToken.imageMeta
+                            });
+                            return;
+                        }
+                        reject(new Error("COS 上传失败"));
+                    },
+                    fail(error) {
+                        reject(error);
+                    }
+                });
             },
             fail(error) {
                 reject(error);

@@ -191,25 +191,29 @@ function uploadToCos(filePath: string, uploadToken: UploadTokenResponse): Promis
   }
 
   return new Promise((resolve, reject) => {
-    wx.uploadFile({
-      url: uploadUrl,
+    wx.getFileSystemManager().readFile({
       filePath,
-      name: "file",
-      header: uploadToken.headers ?? {},
-      formData: {
-        key: uploadToken.objectKey,
-        ...(uploadToken.formData ?? {})
-      },
-      success(result) {
-        if (result.statusCode >= 200 && result.statusCode < 300) {
-          resolve({
-            imageUrl,
-            imageMeta: uploadToken.imageMeta
-          });
-          return;
-        }
+      success(fileResult) {
+        wx.request({
+          url: uploadUrl,
+          method: "PUT",
+          data: fileResult.data,
+          header: uploadToken.headers ?? {},
+          success(result) {
+            if (result.statusCode >= 200 && result.statusCode < 300) {
+              resolve({
+                imageUrl,
+                imageMeta: uploadToken.imageMeta
+              });
+              return;
+            }
 
-        reject(new Error("COS 上传失败"));
+            reject(new Error("COS 上传失败"));
+          },
+          fail(error) {
+            reject(error);
+          }
+        });
       },
       fail(error) {
         reject(error);

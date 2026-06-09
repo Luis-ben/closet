@@ -12,14 +12,12 @@ import { ok } from "../../utils/response";
 import { allowedImageMimeTypes, maxImageSizeBytes } from "../../utils/validation";
 import { parseWithSchema } from "../../utils/validation";
 import {
-  getCosPublicBaseUrl,
-  getCosUploadAuthorization,
-  getCosUploadUrl,
   getImageStorageProvider,
   getPublicBaseUrl,
   getUploadDir,
   getWechatCloudEnv
 } from "./config";
+import { createCosUploadCredential } from "./cosSignature";
 
 const mimeToExtension: Record<string, string> = {
   "image/jpeg": ".jpg",
@@ -53,22 +51,24 @@ export async function uploadRoutes(app: FastifyInstance): Promise<void> {
       const storageProvider = getImageStorageProvider();
 
       if (storageProvider === "cos") {
+        const credential = createCosUploadCredential({
+          objectKey,
+          mimeType: body.mimeType
+        });
+
         return ok({
           provider: storageProvider,
           objectKey,
-          uploadUrl: requireConfig(getCosUploadUrl(), "COS_UPLOAD_URL"),
-          imageUrl: `${requireConfig(getCosPublicBaseUrl(), "COS_PUBLIC_BASE_URL")}/${objectKey}`,
-          headers: {
-            Authorization: requireConfig(getCosUploadAuthorization(), "COS_UPLOAD_AUTHORIZATION"),
-            "Content-Type": body.mimeType
-          },
+          uploadUrl: credential.uploadUrl,
+          imageUrl: credential.imageUrl,
+          headers: credential.headers,
           formData: null,
           cloudPath: null,
           imageMeta: {
             sizeBytes: body.sizeBytes,
             mimeType: body.mimeType
           },
-          expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+          expiresAt: credential.expiresAt
         });
       }
 
